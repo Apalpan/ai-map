@@ -64,7 +64,7 @@ function TextNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
   const effectiveFontSizePx = Math.round(baseFontSizePx * clampedScale);
   const fontSizeStyle = { fontSize: `${effectiveFontSizePx}px` };
 
-  const fontFamilyClass = FONT_FAMILY_MAP[data.fontFamily || 'inter'];
+  const fontFamilyClass = FONT_FAMILY_MAP[data.fontFamily || 'plus-jakarta'];
   const labelEdit = useInlineNodeTextEdit(id, 'label', data.label || '', {
     multiline: true,
     allowTabCreateSibling: true,

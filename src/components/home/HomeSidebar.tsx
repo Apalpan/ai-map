@@ -1,10 +1,10 @@
 import React from 'react';
-import { Book, Home, LayoutTemplate, Plug, Settings } from 'lucide-react';
-import { OpenFlowLogo } from '../icons/OpenFlowLogo';
+import { Book, Home, LayoutTemplate, LogOut, LoaderCircle, Plug, Settings } from 'lucide-react';
 import { SidebarFooter } from './SidebarFooter';
 import { GithubCard } from './GithubCard';
 import { SidebarItem } from '../ui/SidebarItem';
-import { APP_NAME } from '@/lib/brand';
+import { APP_NAME, GENPLUS_LOGO_PRIMARY_URL } from '@/lib/brand';
+import { useAccessSession } from '@/components/auth/AccessGate';
 
 type HomeSidebarTab = 'home' | 'templates' | 'settings' | 'mcp';
 
@@ -21,11 +21,9 @@ interface HomeSidebarProps {
   onTabChange: (tab: HomeSidebarTab) => void;
 }
 
-export function HomeSidebar({
-  activeTab,
-  onTabChange,
-}: HomeSidebarProps): React.ReactElement {
+export function HomeSidebar({ activeTab, onTabChange }: HomeSidebarProps): React.ReactElement {
   const localizedAppName = APP_NAME;
+  const { isLoggingOut, logout } = useAccessSession();
   const navigationItems: NavigationItem[] = [
     {
       icon: <Home className="w-4 h-4" />,
@@ -62,14 +60,18 @@ export function HomeSidebar({
   return (
     <aside className="sticky top-0 z-20 flex w-full flex-col border-b border-[var(--color-brand-border)] bg-[var(--brand-surface)] md:fixed md:inset-y-0 md:left-0 md:w-64 md:border-b-0 md:border-r">
       <div className="flex h-14 items-center gap-3 border-b border-[var(--color-brand-border)] px-4">
-        <OpenFlowLogo className="h-8 w-8 shrink-0" />
+        <img
+          src={GENPLUS_LOGO_PRIMARY_URL}
+          alt="GEN+"
+          className="h-5 w-[74px] shrink-0 object-contain object-left"
+        />
 
-        <span className="truncate text-base font-semibold tracking-tight text-[var(--brand-text)]">
+        <span className="min-w-0 truncate text-sm font-semibold tracking-tight text-[var(--brand-text)]">
           {localizedAppName}
         </span>
 
         <div className="flex items-center justify-center rounded-[5px] border border-[color-mix(in_srgb,var(--color-brand-border),transparent_20%)] bg-[color-mix(in_srgb,var(--brand-surface),transparent_50%)] px-[5px] py-[3px] shadow-[inset_0_1px_2px_rgba(0,0,0,0.06)] dark:shadow-[inset_0_1px_2px_rgba(0,0,0,0.25)]">
-          <span className="text-[9.5px] font-mono font-bold uppercase leading-none tracking-[0.02em] text-[color-mix(in_srgb,var(--brand-secondary),var(--brand-text))]">
+          <span className="text-[9.5px] font-bold uppercase leading-none tracking-[0.02em] text-[color-mix(in_srgb,var(--brand-secondary),var(--brand-text))]">
             v1.0
           </span>
         </div>
@@ -93,7 +95,38 @@ export function HomeSidebar({
         </div>
       </div>
 
+      <div className="absolute right-2 top-1.5 flex items-center md:hidden">
+        <button
+          type="button"
+          onClick={() => void logout()}
+          disabled={isLoggingOut}
+          className="flex min-h-11 min-w-11 items-center justify-center rounded-lg text-[var(--brand-secondary)] transition-[background-color,color,transform] duration-150 hover:bg-[var(--action-soft)] hover:text-[var(--action)] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)]"
+          aria-label="Cerrar sesión"
+        >
+          {isLoggingOut ? (
+            <LoaderCircle className="h-4 w-4 animate-spin" />
+          ) : (
+            <LogOut className="h-4 w-4" />
+          )}
+        </button>
+      </div>
+
       <div className="hidden md:mt-auto md:block">
+        <div className="px-3 pb-3">
+          <button
+            type="button"
+            onClick={() => void logout()}
+            disabled={isLoggingOut}
+            className="flex min-h-11 w-full items-center gap-3 rounded-lg px-3 text-left text-sm font-medium text-[var(--brand-secondary)] transition-[background-color,color,transform] duration-150 hover:bg-[var(--action-soft)] hover:text-[var(--action)] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)]"
+          >
+            {isLoggingOut ? (
+              <LoaderCircle className="h-4 w-4 animate-spin" />
+            ) : (
+              <LogOut className="h-4 w-4" />
+            )}
+            {isLoggingOut ? 'Cerrando sesión…' : 'Cerrar sesión'}
+          </button>
+        </div>
         <GithubCard />
         <SidebarFooter />
       </div>

@@ -1,4 +1,4 @@
-# AI Map — Design Contract
+# AI Map by GEN+ — Design Contract
 
 ## Dirección
 
@@ -6,21 +6,21 @@ Herramienta operacional light-first: canvas claro, jerarquía sobria y un único
 
 ## Tipografía
 
-- UI y contenido: Poppins, con `system-ui` como fallback.
-- Titulares: Poppins 600–700.
+- UI, contenido y titulares: Plus Jakarta Sans 400–800, autoalojada.
+- Ninguna fuente remota. Las clases tipográficas heredadas se remapean a Plus Jakarta Sans.
 
 ## Tokens
 
 ```css
 :root {
-  --ai-map-navy: #0E2A6B;
-  --ai-map-blue: #2165FF;
-  --ai-map-blue-soft: #E9F0FF;
-  --ai-map-bg: #F7F9FD;
-  --ai-map-surface: #FFFFFF;
-  --ai-map-border: #DCE5F2;
-  --ai-map-text: #10264D;
-  --ai-map-muted: #5B6C87;
+  --ai-map-navy: #0e2a6b;
+  --ai-map-blue: #2165ff;
+  --ai-map-blue-soft: #e9f0ff;
+  --ai-map-bg: #f7f9fd;
+  --ai-map-surface: #ffffff;
+  --ai-map-border: #dce5f2;
+  --ai-map-text: #0e2a6b;
+  --ai-map-muted: #5b6c87;
 }
 ```
 
@@ -31,3 +31,7 @@ Cada recomendación debe mostrar origen, confianza, owner y control humano: Apro
 ## Anti-patrones
 
 No usar modo oscuro como superficie principal, neón, gradientes decorativos, tarjetas sin decisión ni “output de IA” sin fuente o limitación explícita.
+
+## Marca y acceso
+
+El logo oficial GEN+ usa `public/brand/gen-logo-primary.png` sobre claro y `gen-logo-white.png` sobre navy. El acceso inicial es una minilanding de producto con un único CTA, estados de red/sesión y foco visible; la promesa operacional precede al formulario.

@@ -109,7 +109,7 @@ describe('Design System integration', () => {
         altSystem.colors.nodeText = '#f6f7f9';
         altSystem.colors.edge = '#ff0055';
         altSystem.components.edge.strokeWidth = 6;
-        altSystem.typography.fontFamily = 'Roboto, sans-serif';
+        altSystem.typography.fontFamily = 'Poppins, sans-serif';
         altSystem.components.node.borderRadius = '2px';
 
         useFlowStore.setState({
@@ -140,14 +140,14 @@ describe('Design System integration', () => {
         if (!nodeContainer) {
             throw new Error('Node container not found');
         }
-        expect(nodeContainer.style.fontFamily).toBe('Inter, sans-serif');
+        expect(nodeContainer.style.fontFamily).toBe('"Plus Jakarta Sans", sans-serif');
         expect(nodeContainer.style.borderRadius).toBe('8px');
 
         act(() => {
             useFlowStore.getState().setActiveDesignSystem('alt');
         });
 
-        expect(nodeContainer.style.fontFamily).toBe('Roboto, sans-serif');
+        expect(nodeContainer.style.fontFamily).toBe('Poppins, sans-serif');
         expect(nodeContainer.style.borderRadius).toBe('2px');
     });
 
@@ -169,7 +169,7 @@ describe('Design System integration', () => {
         );
 
         const beforeStyle = JSON.parse(screen.getByTestId('custom-edge-base').getAttribute('data-style') || '{}');
-        expect(beforeStyle.stroke).toBe('#94a3b8');
+        expect(beforeStyle.stroke).toBe('#5B6C87');
         expect(beforeStyle.strokeWidth).toBe(2);
 
         act(() => {

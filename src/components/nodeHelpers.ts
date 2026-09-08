@@ -12,6 +12,7 @@ export const COMPLEX_SHAPES: NodeShape[] = [
 ];
 
 export const FONT_FAMILY_MAP: Record<string, string> = {
+  'plus-jakarta': 'font-sans',
   inter: 'font-inter',
   roboto: 'font-roboto',
   outfit: 'font-outfit',

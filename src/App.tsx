@@ -20,6 +20,7 @@ import {
 import { DocsSiteRedirect } from '@/components/app/DocsSiteRedirect';
 import { RouteLoadingFallback } from '@/components/app/RouteLoadingFallback';
 import { MobileWorkspaceGate } from '@/components/app/MobileWorkspaceGate';
+import { AccessGate } from '@/components/auth/AccessGate';
 import { CinematicExportProvider } from '@/context/CinematicExportContext';
 
 import { useFlowStore } from './store';
@@ -183,7 +184,7 @@ function EditorRouteGate({ children }: { children: React.ReactNode }): React.JSX
   );
 }
 
-function App(): React.JSX.Element {
+function AuthenticatedApp(): React.JSX.Element {
   const { setShortcutsHelpOpen } = useFlowStore();
   const isShortcutsHelpOpen = useShortcutHelpOpen();
 
@@ -265,6 +266,14 @@ function App(): React.JSX.Element {
         ) : null}
       </Router>
     </>
+  );
+}
+
+function App(): React.JSX.Element {
+  return (
+    <AccessGate>
+      <AuthenticatedApp />
+    </AccessGate>
   );
 }
 

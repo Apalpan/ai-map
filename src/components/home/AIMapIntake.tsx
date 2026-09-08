@@ -36,15 +36,17 @@ export function AIMapIntake({
 }: AIMapIntakeProps): React.ReactElement {
   const textAreaId = useId();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const launchLockRef = useRef(false);
   const [sourceMode, setSourceMode] = useState<SourceMode>('text');
   const [objective, setObjective] = useState('');
   const [text, setText] = useState('');
   const [inventory, setInventory] = useState<FolderIntakeResult | null>(null);
   const [isReadingFolder, setIsReadingFolder] = useState(false);
+  const [isLaunching, setIsLaunching] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const source = getCurrentSource(sourceMode, objective, text, inventory);
-  const canGenerate = source !== null && !isReadingFolder;
+  const canGenerate = source !== null && !isReadingFolder && !isLaunching;
 
   function switchMode(nextMode: SourceMode): void {
     setSourceMode(nextMode);
@@ -78,15 +80,21 @@ export function AIMapIntake({
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>): void {
     event.preventDefault();
+    if (launchLockRef.current) return;
     const validSource = validateSource();
     if (!validSource) return;
-    onGenerateWithAI(buildAIMapStudioPrompt(validSource));
+    launchLockRef.current = true;
+    setIsLaunching(true);
+    onCreateLocalMap(buildLocalInventoryDsl(validSource));
   }
 
-  function handleCreateLocalMap(): void {
+  function handleImproveWithAI(): void {
+    if (launchLockRef.current) return;
     const validSource = validateSource();
     if (!validSource) return;
-    onCreateLocalMap(buildLocalInventoryDsl(validSource));
+    launchLockRef.current = true;
+    setIsLaunching(true);
+    onGenerateWithAI(buildAIMapStudioPrompt(validSource));
   }
 
   function openFolderPicker(): void {
@@ -148,6 +156,26 @@ export function AIMapIntake({
             </div>
           </div>
 
+          <ol
+            className="mb-6 grid grid-cols-4 overflow-hidden rounded-xl border border-[var(--brand-border)] bg-[var(--brand-background)]"
+            aria-label="Flujo de trabajo de AI Map"
+          >
+            {['Fuente', 'Mapa', 'Validación', 'Entrega'].map((step, index) => (
+              <li
+                key={step}
+                className="relative flex min-h-11 items-center justify-center px-1 text-center text-[11px] font-semibold text-[var(--brand-text)] sm:text-xs"
+              >
+                {step}
+                {index < 3 ? (
+                  <ArrowRight
+                    className="absolute -right-2 z-10 h-4 w-4 rounded-full bg-[var(--brand-background)] text-[var(--action)]"
+                    aria-hidden="true"
+                  />
+                ) : null}
+              </li>
+            ))}
+          </ol>
+
           <div
             className="mb-5 inline-flex rounded-xl border border-[var(--brand-border)] bg-[var(--brand-background)] p-1"
             role="group"
@@ -169,7 +197,10 @@ export function AIMapIntake({
 
           <form onSubmit={handleSubmit} noValidate>
             <div className="mb-5">
-              <label htmlFor={`${textAreaId}-objective`} className="mb-2 block text-sm font-semibold text-[var(--brand-text)]">
+              <label
+                htmlFor={`${textAreaId}-objective`}
+                className="mb-2 block text-sm font-semibold text-[var(--brand-text)]"
+              >
                 ¿Qué necesitas entender o decidir?
               </label>
               <input
@@ -189,7 +220,10 @@ export function AIMapIntake({
 
             {sourceMode === 'text' ? (
               <div>
-                <label htmlFor={textAreaId} className="mb-2 block text-sm font-semibold text-[var(--brand-text)]">
+                <label
+                  htmlFor={textAreaId}
+                  className="mb-2 block text-sm font-semibold text-[var(--brand-text)]"
+                >
                   Contexto del proyecto o proceso
                 </label>
                 <textarea
@@ -205,9 +239,14 @@ export function AIMapIntake({
                   aria-describedby="ai-map-text-help"
                   aria-invalid={Boolean(error)}
                 />
-                <div id="ai-map-text-help" className="mt-2 flex items-center justify-between gap-4 text-xs text-[var(--brand-secondary)]">
+                <div
+                  id="ai-map-text-help"
+                  className="mt-2 flex items-center justify-between gap-4 text-xs text-[var(--brand-secondary)]"
+                >
                   <span>Describe entradas, pasos, roles, decisiones o problemas conocidos.</span>
-                  <span className="shrink-0 tabular-nums">{text.length.toLocaleString()} caracteres</span>
+                  <span className="shrink-0 tabular-nums">
+                    {text.length.toLocaleString()} caracteres
+                  </span>
                 </div>
               </div>
             ) : (
@@ -230,7 +269,10 @@ export function AIMapIntake({
 
             <div aria-live="polite" className="min-h-8">
               {error ? (
-                <div className="mt-3 flex items-start gap-2 rounded-xl border border-[var(--color-surface-warning-border)] bg-[var(--color-surface-warning-bg)] px-3 py-2 text-sm text-[var(--color-surface-warning-text)]" role="alert">
+                <div
+                  className="mt-3 flex items-start gap-2 rounded-xl border border-[var(--color-surface-warning-border)] bg-[var(--color-surface-warning-bg)] px-3 py-2 text-sm text-[var(--color-surface-warning-text)]"
+                  role="alert"
+                >
                   <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
                   <span>{error}</span>
                 </div>
@@ -244,8 +286,8 @@ export function AIMapIntake({
                 disabled={!canGenerate}
                 className="min-h-12 flex-1 bg-[var(--action)] text-sm text-[var(--action-text)] hover:bg-[var(--action-hover)] hover:brightness-100 sm:flex-none"
               >
-                <WandSparkles className="h-4 w-4" aria-hidden="true" />
-                Generar mapa con IA
+                <Network className="h-4 w-4" aria-hidden="true" />
+                {isLaunching ? 'Creando mapa…' : 'Crear mapa base'}
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Button>
               <Button
@@ -253,11 +295,11 @@ export function AIMapIntake({
                 size="lg"
                 variant="secondary"
                 disabled={!canGenerate}
-                onClick={handleCreateLocalMap}
+                onClick={handleImproveWithAI}
                 className="min-h-12 border-[var(--brand-border)] text-sm text-[var(--brand-text)] sm:flex-none"
               >
-                <Network className="h-4 w-4" aria-hidden="true" />
-                Crear borrador local
+                <WandSparkles className="h-4 w-4" aria-hidden="true" />
+                Mejorar con AI Mapper
               </Button>
             </div>
           </form>
@@ -268,23 +310,24 @@ export function AIMapIntake({
           <div className="mt-5 space-y-5">
             <AssuranceItem
               icon={<ShieldCheck className="h-4 w-4" aria-hidden="true" />}
-              title="Privacidad local"
-              description="La carpeta se filtra en tu navegador. Aplicamos exclusiones y redacción preventiva; revisa siempre el inventario."
+              title="Fuente bajo control"
+              description="Texto y carpetas se preparan localmente. Revisa siempre el inventario y las exclusiones."
             />
             <AssuranceItem
               icon={<CheckCircle2 className="h-4 w-4" aria-hidden="true" />}
-              title="Veracidad explícita"
+              title="Validación explícita"
               description="CONFIRMADO, INFERIDO, ASUMIDO y NO VERIFICADO permanecen visibles."
             />
             <AssuranceItem
               icon={<Rocket className="h-4 w-4" aria-hidden="true" />}
-              title="Publicación bajo control"
+              title="Entrega bajo control"
               description="Exporta JSON, Mermaid o imagen desde el editor. GitHub y Vercel requieren tu confirmación."
             />
           </div>
 
           <div className="mt-7 border-t border-[var(--brand-border)] pt-5 text-xs leading-5 text-[var(--brand-secondary)]">
-            Ningún filtro garantiza detectar todos los secretos. El borrador local no usa una API ni interpreta el negocio: organiza la entrada para que puedas revisarla de inmediato.
+            Ningún filtro garantiza detectar todos los secretos. El borrador local no usa una API ni
+            interpreta el negocio: organiza la entrada para que puedas revisarla de inmediato.
           </div>
         </aside>
       </div>
@@ -306,9 +349,7 @@ function getCurrentSource(
     return text.trim().length >= MIN_TEXT_LENGTH ? createTextSource(text, objective) : null;
   }
 
-  return inventory && inventory.includedCount > 0
-    ? createFolderSource(inventory, objective)
-    : null;
+  return inventory && inventory.includedCount > 0 ? createFolderSource(inventory, objective) : null;
 }
 
 interface SourceTabProps {
@@ -349,11 +390,18 @@ function FolderPickerState({
 }: FolderPickerStateProps): React.ReactElement {
   if (isReading) {
     return (
-      <div className="flex min-h-64 items-center justify-center rounded-2xl border border-[var(--brand-border)] bg-[var(--brand-background)] px-6 text-center" aria-busy="true">
+      <div
+        className="flex min-h-64 items-center justify-center rounded-2xl border border-[var(--brand-border)] bg-[var(--brand-background)] px-6 text-center"
+        aria-busy="true"
+      >
         <div>
           <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-[var(--brand-primary-200)] border-t-[var(--action)]" />
-          <p className="mt-3 text-sm font-semibold text-[var(--brand-text)]">Preparando inventario seguro…</p>
-          <p className="mt-1 text-xs text-[var(--brand-secondary)]">Filtramos formatos, secretos y límites antes de preparar contenido.</p>
+          <p className="mt-3 text-sm font-semibold text-[var(--brand-text)]">
+            Preparando inventario seguro…
+          </p>
+          <p className="mt-1 text-xs text-[var(--brand-secondary)]">
+            Filtramos formatos, secretos y límites antes de preparar contenido.
+          </p>
         </div>
       </div>
     );
@@ -369,7 +417,9 @@ function FolderPickerState({
         <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--action-soft)] text-[var(--action)]">
           <FolderOpen className="h-6 w-6" aria-hidden="true" />
         </span>
-        <span className="mt-4 text-base font-semibold text-[var(--brand-text)]">Seleccionar carpeta</span>
+        <span className="mt-4 text-base font-semibold text-[var(--brand-text)]">
+          Seleccionar carpeta
+        </span>
         <span className="mt-1 max-w-md text-sm leading-6 text-[var(--brand-secondary)]">
           Compatible con código y documentos textuales. Nada se publica automáticamente.
         </span>
@@ -386,9 +436,17 @@ function FolderPickerState({
             <FolderOpen className="h-4 w-4 shrink-0 text-[var(--action)]" aria-hidden="true" />
             <span className="truncate">{inventory.folderName}</span>
           </div>
-          <p className="mt-1 text-xs text-[var(--brand-secondary)]">Inventario preparado localmente</p>
+          <p className="mt-1 text-xs text-[var(--brand-secondary)]">
+            Inventario preparado localmente
+          </p>
         </div>
-        <Button type="button" size="sm" variant="secondary" onClick={onSelectFolder} className="shrink-0 border-[var(--brand-border)]">
+        <Button
+          type="button"
+          size="sm"
+          variant="secondary"
+          onClick={onSelectFolder}
+          className="shrink-0 border-[var(--brand-border)]"
+        >
           Cambiar carpeta
         </Button>
       </div>
@@ -400,9 +458,15 @@ function FolderPickerState({
         <InventoryMetric value={inventory.redactedCount} label="Redactados" tone="warning" />
       </div>
 
-      <div className="max-h-48 divide-y divide-[var(--brand-border)] overflow-y-auto" aria-label="Resumen del inventario">
+      <div
+        className="max-h-48 divide-y divide-[var(--brand-border)] overflow-y-auto"
+        aria-label="Resumen del inventario"
+      >
         {visibleFiles.map((file) => (
-          <div key={file.path} className="flex items-start justify-between gap-4 px-4 py-2.5 text-xs">
+          <div
+            key={file.path}
+            className="flex items-start justify-between gap-4 px-4 py-2.5 text-xs"
+          >
             <span className="min-w-0 break-all text-[var(--brand-text)]">{file.path}</span>
             <span className={`shrink-0 font-semibold ${getOutcomeClassName(file.outcome)}`}>
               {getOutcomeLabel(file.outcome)}

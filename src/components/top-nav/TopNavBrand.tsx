@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { OpenFlowLogo } from '../icons/OpenFlowLogo';
 import { Tooltip } from '../Tooltip';
 import { SaveStatusIndicator } from './SaveStatusIndicator';
+import { GENPLUS_LOGO_PRIMARY_URL } from '@/lib/brand';
 
 interface BrandUIConfig {
   showBeta?: boolean;
@@ -36,6 +37,11 @@ export function TopNavBrand({
 
   return (
     <div className="flex min-w-0 items-center gap-2">
+      <img
+        src={GENPLUS_LOGO_PRIMARY_URL}
+        alt="GEN+"
+        className="hidden h-[18px] w-[68px] shrink-0 object-contain object-left sm:block"
+      />
       {showIconLogo && (
         <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden">
           {logoUrl ? (
@@ -74,7 +80,7 @@ export function TopNavBrand({
 
       {showTextLogo && (
         <div className="flex min-w-0 flex-col">
-          <span className="truncate text-base font-bold leading-none tracking-tight text-[var(--brand-text)] sm:text-lg">
+          <span className="truncate text-sm font-bold leading-none tracking-tight text-[var(--brand-text)] sm:text-base">
             {appName}
           </span>
         </div>

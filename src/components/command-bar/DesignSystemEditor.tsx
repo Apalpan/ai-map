@@ -124,13 +124,10 @@ const TypographyEditor = ({ system, update }: { system: DesignSystem; update: Up
             <label className="mb-2 block text-xs font-medium text-[var(--brand-text)]">Font Family</label>
             <select
                 className={`${EDITOR_FIELD_DEFAULT_CLASS} text-sm`}
-                value={system.typography.fontFamily.split(',')[0].replace(/['"]/g, '')}
+                value="Plus Jakarta Sans"
                 onChange={(e) => update(system.id, { typography: { ...system.typography, fontFamily: `${e.target.value}, sans-serif` } })}
             >
-                <option value="Inter">Inter</option>
-                <option value="Roboto">Roboto</option>
-                <option value="Open Sans">Open Sans</option>
-                <option value="Lato">Lato</option>
+                <option value="Plus Jakarta Sans">Plus Jakarta Sans</option>
             </select>
         </div>
     </div>

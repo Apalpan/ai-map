@@ -3,6 +3,11 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import App from './App';
 import { useFlowStore } from './store';
 
+vi.mock('@/components/auth/AccessGate', () => ({
+  AccessGate: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  useAccessSession: () => ({ isLoggingOut: false, logout: vi.fn() }),
+}));
+
 vi.mock('./components/HomePage', () => ({
   HomePage: ({
     onLaunch,

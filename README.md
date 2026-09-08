@@ -1,8 +1,8 @@
-# AI Map
+# AI Map by GEN+
 
 **Aplicación:** https://ai-map-six.vercel.app
 
-AI Map convierte un brief, una minuta, un alcance o una carpeta local en un mapa editable de procesos, decisiones, riesgos, evidencias y siguientes acciones. La experiencia es light-first, usa Poppins y conserva el control humano antes de aplicar o publicar cualquier recomendacion.
+AI Map convierte un brief, una minuta, un alcance o una carpeta local en un mapa editable de procesos, decisiones, riesgos, evidencias y siguientes acciones. La experiencia GEN+ es light-first, usa exclusivamente Plus Jakarta Sans y conserva el control humano antes de aplicar o publicar cualquier recomendación.
 
 ## Probar localmente
 
@@ -19,7 +19,9 @@ npm run test -- --run
 npm run build
 ```
 
-La lectura de carpetas se realiza primero en el navegador. AI Map excluye rutas sensibles y muestra que archivos fueron incluidos, omitidos o truncados antes de preparar el contexto para IA. Las claves de proveedores son BYOK; nunca deben guardarse como variables `VITE_*` en un despliegue publico.
+La lectura de carpetas se realiza primero en el navegador. AI Map excluye rutas sensibles y muestra qué archivos fueron incluidos, omitidos o truncados antes de preparar el contexto para IA. El mapa base es determinista y no usa una API; AI Mapper es una mejora opcional. Las claves de proveedores son BYOK y nunca deben guardarse como variables `VITE_*` en un despliegue público.
+
+El acceso GEN+ se valida en Vercel Functions mediante `GENBOT_ACCESS_CODE` y emite una sesión firmada con `GENBOT_SESSION_SECRET`. Ninguno de esos valores entra al bundle. Para desarrollo con login ejecuta `npx vercel dev`; el gate es una barrera de SPA/demo, no identidad multiusuario ni autorización por recurso.
 
 Para arquitectura, alcance, contrato de salida y publicacion consulta [PRODUCT.md](PRODUCT.md), [DESIGN.md](DESIGN.md), [PROMPT_MAESTRO_AI_MAP.md](PROMPT_MAESTRO_AI_MAP.md) y [DEPLOYMENT.md](DEPLOYMENT.md).
 
@@ -219,18 +221,18 @@ Flowpilot sits directly in the editor. Describe a system, paste source code, upl
 
 **10 providers. Bring your own key. Switch any time. One runs entirely on your laptop.**
 
-| Provider            | Default model                              | Why use it                                      |
-| ------------------- | ------------------------------------------ | ----------------------------------------------- |
-| 🦙 **Ollama (local)** | `llama3.2`                               | **Fully offline.** No key, no network, no cost. |
-| Google Gemini       | `gemini-2.5-flash-lite`                    | Free tier available, fast, browser-safe         |
-| OpenAI              | `gpt-5-mini`                               | Best reasoning for complex architectures        |
-| Anthropic Claude    | `claude-sonnet-4-6`                        | Excellent code and system understanding         |
-| Groq                | `meta-llama/llama-4-scout-17b-16e-instruct`| Fastest open-source inference available         |
-| Mistral             | `mistral-large-latest`                     | Strong European privacy-first alternative       |
-| NVIDIA NIM          | `meta/llama-4-maverick-17b-128e-instruct`  | Enterprise GPU inference                        |
-| Cerebras            | `gpt-oss-120b`                             | Ultra-fast on WSE-3 silicon                     |
-| OpenRouter          | `google/gemini-2.5-pro`                    | Access 300+ models through one key              |
-| **Custom endpoint** | Any model                                  | LM Studio, vLLM, or any OpenAI-compatible API   |
+| Provider              | Default model                               | Why use it                                      |
+| --------------------- | ------------------------------------------- | ----------------------------------------------- |
+| 🦙 **Ollama (local)** | `llama3.2`                                  | **Fully offline.** No key, no network, no cost. |
+| Google Gemini         | `gemini-2.5-flash-lite`                     | Free tier available, fast, browser-safe         |
+| OpenAI                | `gpt-5-mini`                                | Best reasoning for complex architectures        |
+| Anthropic Claude      | `claude-sonnet-4-6`                         | Excellent code and system understanding         |
+| Groq                  | `meta-llama/llama-4-scout-17b-16e-instruct` | Fastest open-source inference available         |
+| Mistral               | `mistral-large-latest`                      | Strong European privacy-first alternative       |
+| NVIDIA NIM            | `meta/llama-4-maverick-17b-128e-instruct`   | Enterprise GPU inference                        |
+| Cerebras              | `gpt-oss-120b`                              | Ultra-fast on WSE-3 silicon                     |
+| OpenRouter            | `google/gemini-2.5-pro`                     | Access 300+ models through one key              |
+| **Custom endpoint**   | Any model                                   | LM Studio, vLLM, or any OpenAI-compatible API   |
 
 No proxy. No middleman. Direct browser-to-provider requests.
 
@@ -313,7 +315,7 @@ Point any MCP client at the [`@vrun-design/openflowkit-mcp`](mcp-server/) packag
 }
 ```
 
-Then ask Claude: *"Read the OpenFlowKit DSL cheatsheet, create a checkout flow with a promo-code branch and a Stripe webhook step, validate it, and create a viewer URL."* The DSL comes back in seconds and stays editable in OpenFlowKit.
+Then ask Claude: _"Read the OpenFlowKit DSL cheatsheet, create a checkout flow with a promo-code branch and a Stripe webhook step, validate it, and create a viewer URL."_ The DSL comes back in seconds and stays editable in OpenFlowKit.
 
 - **8 local-first tools** — validate DSL, create viewer URLs, analyze codebases, find icon slugs, fetch starter templates, and inspect capabilities (no API key, runs on your machine)
 - **5 resources** — DSL cheatsheet, template catalog, template bodies, full icon catalog, and per-provider icon catalogs
@@ -403,7 +405,7 @@ Open [http://localhost:5173](http://localhost:5173). Done.
 
 ## Self-host
 
-OpenFlowKit is a pure static SPA. There is no backend. Deploy the `dist/` folder anywhere that serves HTML.
+El motor heredado de OpenFlowKit sigue siendo local-first. Esta versión añade únicamente Vercel Functions para el gate GEN+; el contenido de los mapas continúa en el navegador. Un hosting puramente estático no puede ejecutar el login server-side.
 
 **Cloudflare Pages / Netlify / Vercel:**
 
@@ -427,20 +429,20 @@ No database. No secrets. No infrastructure. One folder, or one container.
 
 ## Tech stack
 
-| Layer         | Technology                                                |
-| ------------- | --------------------------------------------------------- |
-| Framework     | React 19 + TypeScript 5                                   |
-| Build         | Vite 6                                                    |
-| Canvas        | React Flow (XYFlow)                                       |
-| Auto-layout   | ELK.js — runs in a Web Worker, off the main thread        |
+| Layer         | Technology                                                      |
+| ------------- | --------------------------------------------------------------- |
+| Framework     | React 19 + TypeScript 5                                         |
+| Build         | Vite 6                                                          |
+| Canvas        | React Flow (XYFlow)                                             |
+| Auto-layout   | ELK.js — runs in a Web Worker, off the main thread              |
 | Video export  | WebCodecs `VideoEncoder` + `mp4-muxer` (MediaRecorder fallback) |
-| State         | Zustand                                                   |
-| Storage       | IndexedDB — local-first, no backend                       |
-| Styling       | Tailwind CSS                                              |
-| Agent surface | `@vrun-design/openflowkit-mcp` — Model Context Protocol stdio  |
-| Collaboration | WebRTC P2P (opt-in, off by default)                       |
-| i18n          | react-i18next — 7 languages                               |
-| Testing       | Vitest + Playwright                                       |
+| State         | Zustand                                                         |
+| Storage       | IndexedDB — local-first, no backend                             |
+| Styling       | Tailwind CSS                                                    |
+| Agent surface | `@vrun-design/openflowkit-mcp` — Model Context Protocol stdio   |
+| Collaboration | WebRTC P2P (opt-in, off by default)                             |
+| i18n          | react-i18next — 7 languages                                     |
+| Testing       | Vitest + Playwright                                             |
 
 ---
 
@@ -501,7 +503,7 @@ React 19 &nbsp;·&nbsp; TypeScript 5 &nbsp;·&nbsp; Vite 6 &nbsp;·&nbsp; XYFlow
 <br/>
 
 <sub>
-MIT Licensed &nbsp;·&nbsp; Local-first &nbsp;·&nbsp; No telemetry &nbsp;·&nbsp; No account &nbsp;·&nbsp; No server-side storage &nbsp;·&nbsp; No lock-in
+MIT Licensed &nbsp;·&nbsp; Local-first maps &nbsp;·&nbsp; No server-side map storage &nbsp;·&nbsp; No lock-in
 </sub>
 
 <br/>

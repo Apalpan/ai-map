@@ -131,7 +131,7 @@ const mcpFlowStyles = `
 .mcpflow-core-mark { fill: var(--brand-primary); }
 .mcpflow-core-label { fill: var(--brand-text); font-size: 12px; font-weight: 700; text-anchor: middle; }
 .mcpflow-port { fill: var(--brand-primary); }
-.mcpflow-tool-label { fill: var(--brand-text); font-size: 12px; font-weight: 600; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+.mcpflow-tool-label { fill: var(--brand-text); font-size: 12px; font-weight: 600; font-family: 'Plus Jakarta Sans', sans-serif; }
 .mcpflow-packet { opacity: 0; }
 .mcpflow-req { fill: var(--brand-secondary); }
 .mcpflow-res { fill: var(--brand-primary); }

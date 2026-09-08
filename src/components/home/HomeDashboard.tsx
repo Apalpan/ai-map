@@ -1,14 +1,13 @@
 import React from 'react';
 import {
   Copy,
+  FileInput,
   Layout,
-  WandSparkles,
+  LayoutTemplate,
   Pencil,
   Plus,
-  Trash2,
-  LayoutTemplate,
-  FileInput,
   ShieldCheck,
+  Trash2,
 } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { Tooltip } from '../Tooltip';
@@ -46,7 +45,6 @@ export function HomeDashboard({
   flows,
   onCreateNew,
   onOpenTemplates,
-  onPromptWithAI,
   onGenerateAIMap,
   onCreateLocalMap,
   onImportJSON,
@@ -56,17 +54,9 @@ export function HomeDashboard({
   onDeleteFlow,
 }: HomeDashboardProps): React.ReactElement {
   const hasFlows = flows.length > 0;
-  const secondaryActionIconClass =
-    'h-4 w-4 text-[var(--brand-secondary)] transition-transform duration-300 group-hover:scale-110';
-
   function handleCreateNew(): void {
     recordOnboardingEvent('welcome_blank_selected', { source: 'home-dashboard' });
     onCreateNew();
-  }
-
-  function handlePromptWithAI(): void {
-    recordOnboardingEvent('welcome_prompt_selected', { source: 'home-dashboard' });
-    onPromptWithAI();
   }
 
   function handleImportJSON(): void {
@@ -103,10 +93,7 @@ export function HomeDashboard({
         </div>
       </div>
 
-      <AIMapIntake
-        onGenerateWithAI={onGenerateAIMap}
-        onCreateLocalMap={onCreateLocalMap}
-      />
+      <AIMapIntake onGenerateWithAI={onGenerateAIMap} onCreateLocalMap={onCreateLocalMap} />
 
       <section className="mt-12">
         <div className="flex items-center justify-between mb-6">
@@ -137,74 +124,39 @@ export function HomeDashboard({
 
         {!hasFlows ? (
           <div
-            className="flex w-full flex-col py-2 sm:py-6 animate-in fade-in zoom-in-[0.99] duration-700"
+            className="rounded-2xl border border-[var(--brand-border)] bg-[var(--brand-background)] p-4 sm:flex sm:items-center sm:justify-between sm:gap-6 sm:p-5"
             data-testid="home-empty-state"
           >
-            <div className="relative overflow-hidden w-full max-w-[840px] mx-auto rounded-[24px] bg-[var(--brand-surface)] border border-[var(--color-brand-border)]/80 shadow-[0_8px_30px_rgba(0,0,0,0.03)]">
-              {/* Super-delicate background gradient inside card */}
-              <div className="absolute top-0 left-0 w-full h-[140px] bg-gradient-to-b from-[var(--brand-background)] to-[var(--brand-surface)] pointer-events-none"></div>
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[120px] bg-[var(--brand-primary)]/5 blur-[50px] rounded-full pointer-events-none"></div>
-
-              <div className="relative z-10 flex flex-col items-center px-6 py-10 text-center">
-                {/* Sleek Icon */}
-                <div className="flex h-16 w-16 items-center justify-center rounded-[18px] bg-[var(--brand-surface)] shadow-[0_4px_16px_rgba(0,0,0,0.04)] border border-[var(--color-brand-border)]/60 mb-5 relative group cursor-default">
-                  <div className="absolute inset-0 bg-[var(--brand-primary)]/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-[18px]"></div>
-                  <Layout
-                    className="w-8 h-8 text-[var(--brand-primary)] transition-transform group-hover:scale-105 duration-500"
-                    strokeWidth={1.5}
-                  />
-                </div>
-
-                <h2 className="text-[24px] sm:text-[28px] font-bold tracking-tight text-[var(--brand-text)] mb-2">
-                  Tu espacio de trabajo está listo
-                </h2>
-                <p className="text-[14px] text-[var(--brand-secondary)] max-w-[500px] mb-8 leading-relaxed">
-                  Usa la entrada superior para crear tu primer mapa, o abre una herramienta de inicio rápido.
-                </p>
-
-                {/* Action Grid strictly inside the card */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 w-full max-w-[640px]">
-                  <Button
-                    onClick={handleCreateNew}
-                    data-testid="home-create-new-main"
-                    variant="primary"
-                    size="lg"
-                    className="w-full text-[14.5px]"
-                  >
-                    <Plus className="w-4 h-4" strokeWidth={2.5} />{' '}
-                    Mapa en blanco
-                  </Button>
-
-                  <Button
-                    onClick={handlePromptWithAI}
-                    data-testid="home-generate-with-ai"
-                    variant="secondary"
-                    size="lg"
-                    className="w-full text-[14.5px] group"
-                  >
-                    <WandSparkles className={secondaryActionIconClass} strokeWidth={2} />{' '}
-                    Abrir AI Mapper
-                  </Button>
-
-                  <Button
-                    onClick={handleOpenTemplates}
-                    data-testid="home-open-templates"
-                    variant="secondary"
-                    size="lg"
-                    className="w-full text-[14.5px]"
-                  >
-                    <LayoutTemplate className={secondaryActionIconClass} strokeWidth={2} />{' '}
-                    Mapas modelo
-                  </Button>
-                </div>
-
-                <div className="mt-8 flex items-center justify-center pt-6 border-t border-[var(--color-brand-border)]/60 w-full max-w-[640px]">
-                  <ImportExistingFileButton
-                    label="o importa un mapa existente"
-                    onClick={handleImportJSON}
-                  />
-                </div>
-              </div>
+            <div className="mb-4 sm:mb-0">
+              <h3 className="text-sm font-semibold text-[var(--brand-text)]">
+                Aún no tienes mapas guardados
+              </h3>
+              <p className="mt-1 text-xs leading-5 text-[var(--brand-secondary)]">
+                Crea el mapa base arriba o inicia desde una fuente existente.
+              </p>
+            </div>
+            <div className="flex flex-col gap-2 sm:shrink-0 lg:flex-row">
+              <Button
+                onClick={handleCreateNew}
+                data-testid="home-create-new-main"
+                variant="secondary"
+                size="sm"
+                className="min-h-11"
+              >
+                <Plus className="h-4 w-4" />
+                Lienzo en blanco
+              </Button>
+              <Button
+                onClick={handleOpenTemplates}
+                data-testid="home-open-templates"
+                variant="secondary"
+                size="sm"
+                className="min-h-11"
+              >
+                <LayoutTemplate className="h-4 w-4" />
+                Mapas modelo
+              </Button>
+              <ImportExistingFileButton label="Importar mapa" onClick={handleImportJSON} />
             </div>
           </div>
         ) : (
@@ -258,9 +210,7 @@ export function HomeDashboard({
                     {flow.isActive && (
                       <>
                         <div className="h-[3px] w-[3px] rounded-full bg-[color-mix(in_srgb,var(--brand-secondary),transparent_50%)]"></div>
-                        <span className="text-[var(--brand-primary)]">
-                          Mapa actual
-                        </span>
+                        <span className="text-[var(--brand-primary)]">Mapa actual</span>
                       </>
                     )}
                   </div>
@@ -377,7 +327,7 @@ function ImportExistingFileButton({
     <button
       type="button"
       onClick={onClick}
-      className="flex items-center gap-1.5 text-[13px] font-medium text-[var(--brand-secondary)] transition-colors hover:text-[var(--brand-text)] focus:outline-none focus-visible:underline"
+      className="flex min-h-11 items-center justify-center gap-1.5 rounded-lg px-3 text-[13px] font-medium text-[var(--brand-secondary)] transition-[background-color,color] hover:bg-[var(--brand-surface)] hover:text-[var(--brand-text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)]"
     >
       <FileInput className="w-[14px] h-[14px]" />
       {label}

@@ -1,4 +1,4 @@
-# AI Map — Product Contract
+# AI Map by GEN+ — Product Contract
 
 ## Usuario y trabajo
 
@@ -10,10 +10,10 @@ En menos de cinco minutos, transforma una descripción, acta, alcance o brief en
 
 ## Activación y vertical slice
 
-1. El usuario pega el contexto de un proyecto.
-2. AI Map lo descompone en procesos, hitos, roles, dependencias y vacíos.
-3. Presenta el mapa visual con una cola de decisiones y un panel de evidencia.
-4. El usuario revisa, edita o rechaza una recomendación.
+1. El usuario entra mediante el gate privado GEN+.
+2. Pega contexto o selecciona una carpeta local.
+3. Crea primero un mapa base determinista sin llamar a una API.
+4. Opcionalmente lo mejora con AI Mapper y valida supuestos/evidencia.
 5. El mapa se guarda localmente y se exporta como JSON o Mermaid.
 
 ## Entidades iniciales
@@ -40,4 +40,5 @@ Mapas de proyecto revisados con al menos una acción trazable por usuario activo
 - No ejecuta automatizaciones externas.
 - No infiere cierres contractuales, financieros ni técnicos.
 - No trata output de IA como evidencia confirmada.
-- No requiere backend o autenticación para validar el flujo.
+- El gate protege la SPA/demo; no reemplaza autorización por recurso ni identidad multiusuario.
+- Toda futura API sensible debe volver a validar la cookie firmada en servidor.

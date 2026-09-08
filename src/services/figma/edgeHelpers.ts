@@ -134,7 +134,7 @@ export function renderEdgesLayer(out: string[], nodes: Node[], edges: Edge[]): v
             const labelText = escapeXml(String(edge.label));
             const labelWidth = Math.max(labelText.length * 7 + 16, 40);
             out.push(`  <rect x="${labelX - labelWidth / 2}" y="${labelY - 10}" width="${labelWidth}" height="20" rx="4" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />`);
-            out.push(`  <text x="${labelX}" y="${labelY + 4}" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="500" fill="#334155" text-anchor="middle">${labelText}</text>`);
+            out.push(`  <text x="${labelX}" y="${labelY + 4}" font-family="Plus Jakarta Sans, sans-serif" font-size="12" font-weight="500" fill="#334155" text-anchor="middle">${labelText}</text>`);
         }
     });
 

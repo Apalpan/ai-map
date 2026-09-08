@@ -34,14 +34,14 @@ export function renderSectionsLayer(out: string[], nodes: FlowNode[], iconMap: I
             }
 
             const label = data.label || 'Section';
-            out.push(`    <text x="${x + 40}" y="${y + 28}" font-family="Inter, system-ui, sans-serif" font-weight="700" font-size="12" fill="${theme.title}" letter-spacing="-0.01em">${escapeXml(label)}</text>`);
+            out.push(`    <text x="${x + 40}" y="${y + 28}" font-family="Plus Jakarta Sans, sans-serif" font-weight="700" font-size="12" fill="${theme.title}" letter-spacing="-0.01em">${escapeXml(label)}</text>`);
 
             if (data.subLabel) {
                 const badgeText = escapeXml(data.subLabel);
                 const badgeWidth = badgeText.length * 6 + 16;
                 const badgeX = x + 40 + label.length * 8 + 12;
                 out.push(`    <rect x="${badgeX}" y="${y + 12}" width="${badgeWidth}" height="20" rx="10" fill="${theme.badgeBg}" />`);
-                out.push(`    <text x="${badgeX + badgeWidth / 2}" y="${y + 24}" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="500" fill="${theme.badgeText}" text-anchor="middle">${badgeText}</text>`);
+                out.push(`    <text x="${badgeX + badgeWidth / 2}" y="${y + 24}" font-family="Plus Jakarta Sans, sans-serif" font-size="12" font-weight="500" fill="${theme.badgeText}" text-anchor="middle">${badgeText}</text>`);
             }
 
             out.push('  </g>');
@@ -77,12 +77,12 @@ export function renderAnnotationsLayer(out: string[], nodes: FlowNode[]): void {
       Z" fill="#fef3c7" fill-opacity="0.9" stroke="#fcd34d" stroke-width="1" />`);
 
             if (data.label) {
-                out.push(`    <text x="${x + 16}" y="${y + 24}" font-family="Inter, system-ui, sans-serif" font-weight="700" font-size="12" fill="#78350f">${escapeXml(data.label)}</text>`);
+                out.push(`    <text x="${x + 16}" y="${y + 24}" font-family="Plus Jakarta Sans, sans-serif" font-weight="700" font-size="12" fill="#78350f">${escapeXml(data.label)}</text>`);
                 out.push(`    <line x1="${x + 16}" y1="${y + 32}" x2="${x + width - 16}" y2="${y + 32}" stroke="#fde68a" stroke-width="1" />`);
             }
 
             if (data.subLabel) {
-                out.push(`    <text x="${x + 16}" y="${y + 48}" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="500" fill="#92400e">${escapeXml(data.subLabel)}</text>`);
+                out.push(`    <text x="${x + 16}" y="${y + 48}" font-family="Plus Jakarta Sans, sans-serif" font-size="12" font-weight="500" fill="#92400e">${escapeXml(data.subLabel)}</text>`);
             }
 
             const foldSize = 24;
@@ -210,7 +210,7 @@ export function renderStandardNodesLayer(out: string[], nodes: FlowNode[], iconM
                 cursorY += iconSize + gap;
             }
 
-            out.push(`    <text x="${contentCenterX}" y="${cursorY + labelLineHeight - 2}" font-family="Inter, system-ui, sans-serif" font-weight="700" font-size="14" fill="${theme.text}" text-anchor="middle">`);
+            out.push(`    <text x="${contentCenterX}" y="${cursorY + labelLineHeight - 2}" font-family="Plus Jakarta Sans, sans-serif" font-weight="700" font-size="14" fill="${theme.text}" text-anchor="middle">`);
             labelLines.forEach((line, index) => {
                 out.push(`      <tspan x="${contentCenterX}" dy="${index === 0 ? 0 : '1.2em'}">${escapeXml(line)}</tspan>`);
             });
@@ -219,7 +219,7 @@ export function renderStandardNodesLayer(out: string[], nodes: FlowNode[], iconM
 
             if (data.subLabel) {
                 cursorY += gap / 2;
-                out.push(`    <text x="${contentCenterX}" y="${cursorY + subLabelLineHeight - 2}" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="500" fill="${theme.subText}" text-anchor="middle">`);
+                out.push(`    <text x="${contentCenterX}" y="${cursorY + subLabelLineHeight - 2}" font-family="Plus Jakarta Sans, sans-serif" font-size="12" font-weight="500" fill="${theme.subText}" text-anchor="middle">`);
                 subLabelLines.forEach((line, index) => {
                     out.push(`      <tspan x="${contentCenterX}" dy="${index === 0 ? 0 : '1.2em'}">${escapeXml(line)}</tspan>`);
                 });
@@ -248,12 +248,7 @@ export function renderTextNodesLayer(out: string[], nodes: FlowNode[]): void {
             const label = escapeXml(data.label || 'Text');
             const fontSizeMap: Record<string, number> = { small: 12, medium: 14, large: 18, xl: 24 };
             const fontSize = fontSizeMap[data.fontSize || 'medium'] || 14;
-            const fontFamilyMap: Record<string, string> = {
-                sans: 'Inter, system-ui, sans-serif',
-                serif: 'Times New Roman, serif',
-                mono: 'Courier New, monospace',
-            };
-            const fontFamily = fontFamilyMap[data.fontFamily || 'sans'] || 'Inter, system-ui, sans-serif';
+            const fontFamily = 'Plus Jakarta Sans, sans-serif';
             const lines = label.split('\n');
             const lineHeight = fontSize * 1.2;
             const totalTextHeight = lines.length * lineHeight;

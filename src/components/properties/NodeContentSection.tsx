@@ -28,11 +28,7 @@ interface NodeContentSectionProps {
 }
 
 const FONT_FAMILY_OPTIONS: SelectOption[] = [
-    { value: 'inter', label: 'Inter' },
-    { value: 'roboto', label: 'Roboto' },
-    { value: 'outfit', label: 'Outfit' },
-    { value: 'playfair', label: 'Playfair' },
-    { value: 'fira', label: 'Mono' },
+    { value: 'plus-jakarta', label: 'Plus Jakarta Sans' },
 ];
 
 const LABEL_SIZE_OPTIONS: SelectOption[] = ['12', '14', '16', '18', '20', '24', '32', '48', '64'].map((size) => ({
@@ -142,7 +138,7 @@ export function NodeContentSection({
                     <div className="flex flex-col gap-2.5 border-t border-[var(--color-brand-border)] bg-[var(--brand-background)]/40 p-2.5">
                         <div className="w-full">
                             <Select
-                                value={selectedNode.data?.fontFamily || 'inter'}
+                                value="plus-jakarta"
                                 onChange={(val) => onChange(selectedNode.id, { fontFamily: val })}
                                 options={FONT_FAMILY_OPTIONS}
                                 placeholder="Font family"
@@ -214,7 +210,7 @@ export function NodeContentSection({
                             <div className="flex items-center gap-2">
                                 <div className="flex-1">
                                     <Select
-                                        value={selectedNode.data?.subLabelFontFamily || selectedNode.data?.fontFamily || 'inter'}
+                                        value="plus-jakarta"
                                         onChange={(val) => onChange(selectedNode.id, { subLabelFontFamily: val })}
                                         options={FONT_FAMILY_OPTIONS}
                                         placeholder="Secondary Font"
