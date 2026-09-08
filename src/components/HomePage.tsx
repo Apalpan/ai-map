@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useState } from 'react';
+import React, { useState } from 'react';
 import { useFlowStore } from '../store';
 import { useWorkspaceDocumentActions, useWorkspaceDocumentsState } from '@/store/documentHooks';
 import { HomeDashboard, type HomeFlowCard } from './home/HomeDashboard';
@@ -7,21 +7,17 @@ import { HomeMCPView } from './home/HomeMCPView';
 import { HomeSettingsView } from './home/HomeSettingsView';
 import { HomeSidebar } from './home/HomeSidebar';
 import { HomeTemplatesView } from './home/HomeTemplatesView';
-import { shouldShowWelcomeModal } from './home/welcomeModalState';
 
 type HomePageTab = 'home' | 'templates' | 'settings' | 'mcp';
 type HomeSettingsTab = 'general' | 'canvas' | 'shortcuts' | 'ai' | 'mcp';
-
-const LazyWelcomeModal = lazy(async () => {
-  const module = await import('./WelcomeModal');
-  return { default: module.WelcomeModal };
-});
 
 interface HomePageProps {
   onLaunch: () => void;
   onLaunchWithTemplates: () => void;
   onLaunchWithTemplate: (templateId: string) => void;
   onLaunchWithAI: () => void;
+  onGenerateAIMap: (prompt: string) => void;
+  onCreateLocalMap: (dsl: string) => void;
   onImportJSON: () => void;
   onOpenFlow: (flowId: string) => void;
   activeTab?: HomePageTab;
@@ -33,6 +29,8 @@ export const HomePage: React.FC<HomePageProps> = ({
   onLaunchWithTemplates,
   onLaunchWithTemplate,
   onLaunchWithAI,
+  onGenerateAIMap,
+  onCreateLocalMap,
   onImportJSON,
   onOpenFlow,
   activeTab: propActiveTab,
@@ -45,7 +43,6 @@ export const HomePage: React.FC<HomePageProps> = ({
   const [activeSettingsTab, setActiveSettingsTab] = useState<HomeSettingsTab>('general');
   const [flowPendingRename, setFlowPendingRename] = useState<HomeFlowCard | null>(null);
   const [flowPendingDelete, setFlowPendingDelete] = useState<HomeFlowCard | null>(null);
-  const showWelcomeModal = shouldShowWelcomeModal();
 
   const activeTab = propActiveTab ?? internalActiveTab;
   const flows: HomeFlowCard[] = hasWorkspaceDocuments ? documents : [];
@@ -122,6 +119,8 @@ export const HomePage: React.FC<HomePageProps> = ({
             onCreateNew={onLaunch}
             onOpenTemplates={onLaunchWithTemplates}
             onPromptWithAI={onLaunchWithAI}
+            onGenerateAIMap={onGenerateAIMap}
+            onCreateLocalMap={onCreateLocalMap}
             onImportJSON={onImportJSON}
             onOpenFlow={onOpenFlow}
             onRenameFlow={handleRenameFlow}
@@ -157,16 +156,6 @@ export const HomePage: React.FC<HomePageProps> = ({
         onClose={() => setFlowPendingDelete(null)}
         onConfirm={confirmFlowDelete}
       />
-      {showWelcomeModal ? (
-        <Suspense fallback={null}>
-          <LazyWelcomeModal
-            onOpenTemplates={onLaunchWithTemplates}
-            onPromptWithAI={onLaunchWithAI}
-            onImport={onImportJSON}
-            onBlankCanvas={onLaunch}
-          />
-        </Suspense>
-      ) : null}
     </div>
   );
 };

@@ -1,5 +1,5 @@
 {
-  "name": "openflowkit",
+  "name": "ai-map",
   "private": true,
   "version": "0.1.1",
   "type": "module",
@@ -8,7 +8,7 @@
     "docs-site",
     "mcp-server"
   ],
-  "homepage": "https://openflowkit.com",
+  "homepage": "https://github.com/Apalpan/ai-map",
   "engines": {
     "node": ">=18.0.0"
   },

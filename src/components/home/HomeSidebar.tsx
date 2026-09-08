@@ -1,6 +1,5 @@
 import React from 'react';
 import { Book, Home, LayoutTemplate, Plug, Settings } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
 import { OpenFlowLogo } from '../icons/OpenFlowLogo';
 import { SidebarFooter } from './SidebarFooter';
 import { GithubCard } from './GithubCard';
@@ -26,38 +25,37 @@ export function HomeSidebar({
   activeTab,
   onTabChange,
 }: HomeSidebarProps): React.ReactElement {
-  const { t } = useTranslation();
-  const localizedAppName = t('home.appName', APP_NAME);
+  const localizedAppName = APP_NAME;
   const navigationItems: NavigationItem[] = [
     {
       icon: <Home className="w-4 h-4" />,
-      label: t('nav.home', 'Home'),
+      label: 'Inicio',
       tab: 'home',
       testId: 'sidebar-home',
     },
     {
       icon: <LayoutTemplate className="w-4 h-4" />,
-      label: t('nav.templates', 'Templates'),
+      label: 'Modelos',
       tab: 'templates',
       testId: 'sidebar-templates',
     },
     {
       icon: <Plug className="w-4 h-4" />,
-      label: t('nav.mcp', 'MCP'),
+      label: 'Conectores',
       tab: 'mcp',
       testId: 'sidebar-mcp',
     },
     {
       icon: <Settings className="w-4 h-4" />,
-      label: t('nav.settings', 'Settings'),
+      label: 'Configuracion',
       tab: 'settings',
       testId: 'sidebar-settings',
     },
     {
       icon: <Book className="w-4 h-4" />,
-      label: t('nav.documentation', 'Documentation'),
+      label: 'Guia del producto',
       testId: 'sidebar-docs',
-      to: 'https://docs.openflowkit.com',
+      to: 'https://github.com/Apalpan/ai-map#readme',
     },
   ];
 

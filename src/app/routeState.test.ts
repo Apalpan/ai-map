@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import {
   createFlowEditorAIRouteState,
+  createFlowEditorAIMapRouteState,
   createFlowEditorImportRouteState,
+  getInitialFlowEditorAIPrompt,
   shouldOpenFlowEditorAI,
   shouldOpenFlowEditorImportDialog,
   shouldOpenFlowEditorTemplates,
@@ -14,6 +16,10 @@ describe('routeState', () => {
 
   it('creates route state that requests templates and studio ai entry points', () => {
     expect(createFlowEditorAIRouteState()).toEqual({ openStudioAI: true });
+    expect(createFlowEditorAIMapRouteState('Map this')).toEqual({
+      openStudioAI: true,
+      initialAIPrompt: 'Map this',
+    });
     expect(shouldOpenFlowEditorTemplates({ openTemplates: true })).toBe(true);
   });
 
@@ -29,5 +35,11 @@ describe('routeState', () => {
     expect(shouldOpenFlowEditorTemplates({ openTemplates: false })).toBe(false);
     expect(shouldOpenFlowEditorAI({ openStudioAI: true })).toBe(true);
     expect(shouldOpenFlowEditorAI({ openStudioAI: false })).toBe(false);
+  });
+
+  it('reads only non-empty initial AI prompts', () => {
+    expect(getInitialFlowEditorAIPrompt({ initialAIPrompt: 'Map this' })).toBe('Map this');
+    expect(getInitialFlowEditorAIPrompt({ initialAIPrompt: '   ' })).toBeNull();
+    expect(getInitialFlowEditorAIPrompt(null)).toBeNull();
   });
 });

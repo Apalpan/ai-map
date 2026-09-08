@@ -276,10 +276,10 @@
     "homeEmptySubtitle": "Diseña arquitecturas de nivel empresarial al instante. Comienza con un lienzo en blanco, describe tu infraestructura con nuestro constructor de IA, o usa una plantilla adaptada.",
     "homeBlankCanvas": "Lienzo en blanco",
     "createNew": "Crear nuevo",
-    "homeFlowpilotAI": "Flowpilot IA",
+    "homeFlowpilotAI": "Mapeador IA",
     "homeTemplates": "Plantillas",
     "homeImportFile": "O importar un archivo existente",
-    "suggestionAI": "Flowpilot IA",
+    "suggestionAI": "Mapeador IA",
     "suggestionBlank": "Lienzo en blanco",
     "suggestionBlankDesc": "Saltar directamente al editor",
     "suggestionAIDesc": "Empezar desde un mensaje",
@@ -354,7 +354,7 @@
     "apiKey": "Clave API",
     "placeholder": "Describe tu diagrama...",
     "settingsSubtitle": "Configura tu proveedor de IA, modelo y clave API preferidos a continuación.",
-    "generateWithFlowpilot": "Generar con Flowpilot",
+    "generateWithFlowpilot": "Generar con AI Mapper",
     "howToGetKey": "Cómo obtener tu clave API",
     "openConsole": "Abrir consola",
     "pasteKeyStep": "Pégala en el campo de arriba; nunca se comparte con nosotros",
@@ -471,7 +471,7 @@
     "description": "El canvas white-label definitivo.",
     "diagramAsCode": "Diagrama como código",
     "diagramAsCodeDesc": "Soporte de Mermaid.js y DSL tipado.",
-    "flowpilotAI": "Flowpilot",
+      "flowpilotAI": "AI Mapper",
     "aiAssistant": "Asistente IA",
     "flowpilotAIDesc": "Trabaja en tu diagrama con ediciones guiadas por IA.",
     "addRedisCache": "Agregar caché Redis frente a la BD.",
@@ -529,7 +529,7 @@
     "communityDesc": "Únete a desarrolladores que construyen con OpenFlowKit.",
     "roadmap": "Hoja de ruta",
     "coreRenderer": "Motor principal",
-    "flowpilotAI": "Flowpilot"
+      "flowpilotAI": "AI Mapper"
   },
   "demo": {
     "livePreview": "Vista previa en vivo",
@@ -583,7 +583,7 @@
   },
   "commandBar": {
     "ai": {
-      "title": "Preguntar a Flowpilot",
+    "title": "Preguntar a AI Mapper",
       "clearChat": "Borrar historial",
       "placeholder": "Describe lo que quieres crear...",
       "examples": {
@@ -835,11 +835,11 @@
   "settingsModal": {
     "title": "Configuración",
     "general": "General",
-    "flowpilotAI": "Flowpilot",
+    "flowpilotAI": "AI Mapper",
     "shortcuts": "Atajos",
     "running": "{appName} en ejecución",
     "generalSettings": "Configuración general",
-    "flowpilotConfigurations": "Configuración de Flowpilot",
+    "flowpilotConfigurations": "Configuración de AI Mapper",
     "keyboardShortcuts": "Atajos de teclado",
     "canvas": {
       "title": "Canvas",
@@ -1216,7 +1216,7 @@
   "toolbar": {
     "selectMode": "Modo selección (V)",
     "panMode": "Modo mover (H)",
-    "flowpilot": "Flowpilot",
+    "flowpilot": "AI Mapper",
     "templates": "Plantillas",
     "addItem": "Agregar elemento",
     "addToCanvas": "Agregar al lienzo",
@@ -1247,8 +1247,8 @@
     "applyingLayout": "Aplicando diseño…",
     "emptyState": {
       "title": "Comenzar a construir",
-      "description": "Su lienzo está vacío. Genere un flujo con Flowpilot o comience desde cero.",
-      "generateWithFlowpilot": "Generar con Flowpilot",
+    "description": "Tu lienzo está vacío. Genera un flujo con AI Mapper o comienza desde cero.",
+    "generateWithFlowpilot": "Generar con AI Mapper",
       "browseTemplates": "Explorar plantillas",
       "addBlankNode": "Agregar forma en blanco"
     },

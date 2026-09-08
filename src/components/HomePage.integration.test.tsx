@@ -5,7 +5,6 @@ import { HomePage } from './HomePage';
 import { useFlowStore } from '@/store';
 import type { FlowTab } from '@/lib/types';
 import type { FlowDocument } from '@/services/storage/flowDocumentModel';
-import { WELCOME_MODAL_ENABLED_STORAGE_KEY, WELCOME_SEEN_STORAGE_KEY } from './home/welcomeModalState';
 import { recordOnboardingEvent } from '@/services/onboarding/events';
 
 vi.mock('react-i18next', async (importOriginal) => {
@@ -40,8 +39,6 @@ describe('HomePage integration flows', () => {
 
     beforeEach(() => {
         localStorage.clear();
-        localStorage.setItem(WELCOME_MODAL_ENABLED_STORAGE_KEY, 'false');
-        localStorage.setItem(WELCOME_SEEN_STORAGE_KEY, 'true');
         useFlowStore.setState({});
     });
 
@@ -54,6 +51,8 @@ describe('HomePage integration flows', () => {
                         onLaunchWithTemplates={vi.fn()}
                         onLaunchWithTemplate={vi.fn()}
                         onLaunchWithAI={vi.fn()}
+                        onGenerateAIMap={vi.fn()}
+                        onCreateLocalMap={vi.fn()}
                         onImportJSON={vi.fn()}
                         onOpenFlow={vi.fn()}
                         {...props}
@@ -83,7 +82,16 @@ describe('HomePage integration flows', () => {
 
         fireEvent.click(screen.getByTestId('sidebar-settings'));
         expect(screen.getByRole('heading', { name: 'Settings' })).toBeTruthy();
-        expect(screen.getByText('Flowpilot')).toBeTruthy();
+        expect(screen.getByText('AI Mapper')).toBeTruthy();
+    });
+
+    it('shows AI Map intake immediately on a first visit without a blocking legacy modal', async () => {
+        setEmptyHomeState();
+
+        await renderHomePage();
+
+        expect(screen.getByRole('heading', { name: 'Convierte cualquier contexto en un mapa que sí se entiende.' })).toBeTruthy();
+        expect(screen.queryByText('Welcome to OpenFlowKit')).toBeNull();
     });
 
     it('opens the selected template flow from the homepage templates tab', async () => {
@@ -226,11 +234,11 @@ describe('HomePage integration flows', () => {
 
         await renderHomePage({ onOpenFlow });
 
-        fireEvent.click(screen.getAllByLabelText('Duplicate')[0]);
+        fireEvent.click(screen.getAllByLabelText('Duplicar')[0]);
         expect(onOpenFlow).toHaveBeenCalledTimes(1);
 
         const flowOneCard = screen.getByText('Flow One').closest('.group') as HTMLElement;
-        fireEvent.click(within(flowOneCard).getByLabelText('Delete'));
+        fireEvent.click(within(flowOneCard).getByLabelText('Eliminar'));
         const deleteDialog = screen.getByRole('dialog', { name: 'Delete flow' });
         fireEvent.click(within(deleteDialog).getByRole('button', { name: 'Delete' }));
         expect(useFlowStore.getState().tabs.some((tab) => tab.id === 'tab-1')).toBe(false);
@@ -271,7 +279,7 @@ describe('HomePage integration flows', () => {
         await renderHomePage();
 
         const flowCard = screen.getByText('Flow One').closest('.group') as HTMLElement;
-        fireEvent.click(within(flowCard).getByLabelText('Rename'));
+        fireEvent.click(within(flowCard).getByLabelText('Renombrar'));
 
         const renameDialog = screen.getByRole('dialog', { name: 'Rename flow' });
         const renameInput = within(renameDialog).getByLabelText('Flow name');
@@ -317,7 +325,7 @@ describe('HomePage integration flows', () => {
         await renderHomePage();
 
         const flowCard = screen.getByText('Solo Flow').closest('.group') as HTMLElement;
-        fireEvent.click(within(flowCard).getByLabelText('Delete'));
+        fireEvent.click(within(flowCard).getByLabelText('Eliminar'));
 
         const deleteDialog = screen.getByRole('dialog', { name: 'Delete flow' });
         fireEvent.click(within(deleteDialog).getByRole('button', { name: 'Delete' }));

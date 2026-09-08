@@ -9,12 +9,12 @@ interface ThemeContextValue {
 }
 
 const ThemeContext = createContext<ThemeContextValue>({
-  theme: 'system',
+  theme: 'light',
   resolvedTheme: 'light',
   setTheme: () => {},
 });
 
-const STORAGE_KEY = 'openflowkit-theme';
+const STORAGE_KEY = 'ai-map-theme';
 
 function getSystemTheme(): 'light' | 'dark' {
   if (typeof window === 'undefined') return 'light';
@@ -23,8 +23,8 @@ function getSystemTheme(): 'light' | 'dark' {
 
 export function ThemeProvider({ children }: { children: React.ReactNode }): React.ReactElement {
   const [theme, setThemeState] = useState<Theme>(() => {
-    if (typeof window === 'undefined') return 'system';
-    return (localStorage.getItem(STORAGE_KEY) as Theme) || 'system';
+    if (typeof window === 'undefined') return 'light';
+    return (localStorage.getItem(STORAGE_KEY) as Theme) || 'light';
   });
 
   const [systemTheme, setSystemTheme] = useState<'light' | 'dark'>(() => getSystemTheme());
@@ -43,8 +43,17 @@ export function ThemeProvider({ children }: { children: React.ReactNode }): Reac
   }, [theme]);
 
   const setTheme = useCallback((next: Theme) => {
+    const transitionBlocker = document.createElement('style');
+    transitionBlocker.textContent =
+      '*,*::before,*::after{transition:none!important;-webkit-transition:none!important}';
+    document.head.appendChild(transitionBlocker);
+    const nextResolvedTheme = next === 'system' ? getSystemTheme() : next;
+    document.documentElement.setAttribute('data-theme', nextResolvedTheme);
+    document.documentElement.style.colorScheme = nextResolvedTheme;
     setThemeState(next);
     localStorage.setItem(STORAGE_KEY, next);
+    void window.getComputedStyle(transitionBlocker).opacity;
+    document.head.removeChild(transitionBlocker);
   }, []);
 
   const value = useMemo<ThemeContextValue>(

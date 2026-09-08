@@ -2,7 +2,7 @@ import React from 'react';
 import { Github, Star } from 'lucide-react';
 import { useGithubStars } from '@/hooks/useGithubStars';
 
-const GITHUB_REPOSITORY_URL = 'https://github.com/Vrun-design/openflowkit';
+const GITHUB_REPOSITORY_URL = 'https://github.com/Apalpan/ai-map';
 
 const cardClassName = [
   'group relative flex h-[36px] w-full items-center justify-between rounded-[8px]',
@@ -38,7 +38,7 @@ export function GithubCard(): React.ReactElement {
             strokeWidth={2}
           />
           <span className="text-[13px] font-medium tracking-[0.01em] text-[#27272A] transition-colors duration-150 group-hover:text-black dark:text-[#D4D4D8] dark:group-hover:text-white">
-            Star on GitHub
+            Ver en GitHub
           </span>
         </div>
 

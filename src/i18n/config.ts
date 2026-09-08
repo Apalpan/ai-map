@@ -139,7 +139,7 @@ i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    fallbackLng: 'en',
+    fallbackLng: 'es',
     debug: false,
     missingKeyHandler: (_languages, _namespace, key) => warnMissingTranslationKey(key),
     returnNull: false,
@@ -161,7 +161,7 @@ i18n
       ja: { translation: jaTranslation },
     },
     detection: {
-      order: ['localStorage', 'navigator'],
+      order: ['localStorage'],
       caches: ['localStorage'],
       lookupLocalStorage: 'i18nextLng',
     },

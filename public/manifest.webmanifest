@@ -1,20 +1,20 @@
 {
-  "name": "OpenFlowKit",
-  "short_name": "OpenFlowKit",
-  "description": "Local-first diagramming for developers and technical builders.",
+  "name": "AI Map",
+  "short_name": "AI Map",
+  "description": "Mapeo visual de procesos, decisiones, riesgos y evidencia con IA y control humano.",
   "start_url": "/index.html#/home",
   "display": "standalone",
   "background_color": "#f8fafc",
-  "theme_color": "#2563eb",
+  "theme_color": "#0E2A6B",
   "icons": [
     {
-      "src": "/Logo_openflowkit.svg",
+      "src": "/ai-map-mark.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"
     },
     {
-      "src": "/favicon.svg",
+      "src": "/ai-map-mark.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"

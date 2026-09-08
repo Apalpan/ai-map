@@ -1,5 +1,5 @@
 {
-  "name": "OpenFlowKit",
-  "description": "The bridge between Diagram-as-Code and visual whiteboarding. Instantly render Mermaid/DSL into editable UI, export to Figma, and iterate with Flowpilot.",
+  "name": "AI Map",
+  "description": "Convierte informacion de texto o carpetas en mapas editables y trazables de procesos, decisiones, riesgos, evidencia y acciones.",
   "requestFramePermissions": []
 }

@@ -62,7 +62,7 @@ describe('StudioPanel', () => {
   it('shows the studio tabs in the shared segmented control and keeps AI as the primary workspace', async () => {
     render(<StudioPanel {...createProps()} />);
 
-    expect(screen.getByText('Flowpilot')).toBeTruthy();
+    expect(screen.getByText('AI Mapper')).toBeTruthy();
     expect(screen.getByText('Code')).toBeTruthy();
     expect(await screen.findByTestId('studio-ai-panel')).toBeTruthy();
   });

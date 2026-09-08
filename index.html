@@ -1,36 +1,48 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#2563eb" />
-  <title>OpenFlowKit | Free Local-First AI Diagramming for Builders</title>
+  <meta name="theme-color" content="#0E2A6B" />
+  <script>
+    (function () {
+      try {
+        var savedTheme = localStorage.getItem('ai-map-theme') || 'light';
+        var resolvedTheme = savedTheme === 'system'
+          ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+          : savedTheme;
+        document.documentElement.setAttribute('data-theme', resolvedTheme);
+        document.documentElement.style.colorScheme = resolvedTheme;
+      } catch (error) {
+        document.documentElement.setAttribute('data-theme', 'light');
+        document.documentElement.style.colorScheme = 'light';
+      }
+    })();
+  </script>
+  <title>AI Map | Procesos claros, decisiones trazables</title>
   <meta name="description"
-    content="Create beautiful diagrams for free. Open-source tool with AI, Mermaid.js support, Figma export, and one-click auto-layout. No signup required." />
+    content="Convierte texto, briefs y carpetas en mapas editables de procesos, decisiones, riesgos, evidencias y siguientes acciones." />
   <meta name="keywords"
-    content="free diagram tool, open source diagram maker, mermaid.js editor, flowchart tool, architecture diagrams, developer tools, react flow" />
-  <link rel="canonical" href="https://openflowkit.com/" />
-  <link rel="icon" type="image/svg+xml" href="/Logo_openflowkit.svg" />
+    content="AI process map, mapa de procesos, gestion visual, decisiones, riesgos, evidencia, Mermaid, AEC, GEN+" />
+  <link rel="canonical" href="https://ai-map-six.vercel.app/" />
+  <link rel="icon" type="image/svg+xml" href="/ai-map-mark.svg" />
   <link rel="manifest" href="/manifest.webmanifest" />
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://openflowkit.com/" />
-  <meta property="og:title" content="OpenFlowKit | Free Local-First AI Diagramming for Builders" />
+  <meta property="og:title" content="AI Map | Procesos claros, decisiones trazables" />
   <meta property="og:description"
-    content="Create beautiful diagrams for free. AI-powered, Mermaid.js support, Figma export, and auto-layout. No signup required." />
-  <meta property="og:image" content="https://openflowkit.com/readme/1.png" />
-  <meta property="og:image:alt" content="OpenFlowKit product preview" />
+    content="De informacion dispersa a un mapa editable con responsables, riesgos, evidencia y proximas acciones." />
+  <meta property="og:url" content="https://ai-map-six.vercel.app/" />
+  <meta property="og:image:alt" content="Vista previa de AI Map" />
 
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image" />
-  <meta property="twitter:url" content="https://openflowkit.com/" />
-  <meta property="twitter:title" content="OpenFlowKit | Free Local-First AI Diagramming for Builders" />
+  <meta property="twitter:title" content="AI Map | Procesos claros, decisiones trazables" />
   <meta property="twitter:description"
-    content="Create beautiful diagrams for free. AI-powered, Mermaid.js support, Figma export, and auto-layout. No signup required." />
-  <meta property="twitter:image" content="https://openflowkit.com/readme/1.png" />
-  <meta property="twitter:image:alt" content="OpenFlowKit product preview" />
+    content="Mapea procesos, decisiones, riesgos y evidencia desde texto o carpetas, con control humano." />
+  <meta property="twitter:image:alt" content="Vista previa de AI Map" />
 
   <link rel="stylesheet" href="/src/index.css" />
 </head>

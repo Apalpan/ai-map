@@ -10,9 +10,11 @@ import {
 } from 'react-router-dom';
 import { ReactFlowProvider } from '@/lib/reactflowCompat';
 import {
+  createFlowEditorAIMapRouteState,
   createFlowEditorAIRouteState,
   createFlowEditorInitialTemplateRouteState,
   createFlowEditorImportRouteState,
+  createFlowEditorOpenFlowDslRouteState,
   type FlowEditorRouteState,
 } from '@/app/routeState';
 import { DocsSiteRedirect } from '@/components/app/DocsSiteRedirect';
@@ -131,6 +133,14 @@ function HomePageRoute(): React.JSX.Element {
     openNewFlow(createFlowEditorAIRouteState());
   }
 
+  function handleGenerateAIMap(prompt: string): void {
+    openNewFlow(createFlowEditorAIMapRouteState(prompt));
+  }
+
+  function handleCreateLocalMap(dsl: string): void {
+    openNewFlow(createFlowEditorOpenFlowDslRouteState(dsl));
+  }
+
   function handleLaunchWithInitialTemplate(templateId: string): void {
     openNewFlow(createFlowEditorInitialTemplateRouteState(templateId));
   }
@@ -146,6 +156,8 @@ function HomePageRoute(): React.JSX.Element {
         onLaunchWithTemplates={handleLaunchWithTemplates}
         onLaunchWithTemplate={handleLaunchWithInitialTemplate}
         onLaunchWithAI={handleLaunchWithAI}
+        onGenerateAIMap={handleGenerateAIMap}
+        onCreateLocalMap={handleCreateLocalMap}
         onImportJSON={handleImportJSON}
         onOpenFlow={(flowId) => navigate(`/flow/${flowId}`)}
         activeTab={activeTab}
@@ -208,7 +220,7 @@ function App(): React.JSX.Element {
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-slate-900 focus:text-white focus:rounded-lg focus:text-sm focus:font-medium"
       >
-        Skip to content
+        Saltar al contenido
       </a>
       <Router>
         <Routes>

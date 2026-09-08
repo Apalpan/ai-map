@@ -1,3 +1,32 @@
+# AI Map
+
+**Aplicación:** https://ai-map-six.vercel.app
+
+AI Map convierte un brief, una minuta, un alcance o una carpeta local en un mapa editable de procesos, decisiones, riesgos, evidencias y siguientes acciones. La experiencia es light-first, usa Poppins y conserva el control humano antes de aplicar o publicar cualquier recomendacion.
+
+## Probar localmente
+
+```bash
+npm install
+npm run dev
+```
+
+Validacion de produccion:
+
+```bash
+npm run lint
+npm run test -- --run
+npm run build
+```
+
+La lectura de carpetas se realiza primero en el navegador. AI Map excluye rutas sensibles y muestra que archivos fueron incluidos, omitidos o truncados antes de preparar el contexto para IA. Las claves de proveedores son BYOK; nunca deben guardarse como variables `VITE_*` en un despliegue publico.
+
+Para arquitectura, alcance, contrato de salida y publicacion consulta [PRODUCT.md](PRODUCT.md), [DESIGN.md](DESIGN.md), [PROMPT_MAESTRO_AI_MAP.md](PROMPT_MAESTRO_AI_MAP.md) y [DEPLOYMENT.md](DEPLOYMENT.md).
+
+> Derivado de OpenFlowKit bajo licencia MIT. Se conserva la licencia y la atribucion del proyecto original. Las capacidades tecnicas heredadas se documentan a continuacion.
+
+---
+
 <div align="center">
 
 <br/>

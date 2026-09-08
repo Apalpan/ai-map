@@ -160,7 +160,7 @@ export function buildFlowEditorEmptyStateProps({
         'Choose the fastest way to get a first draft on the canvas, then refine it with layout, properties, and Studio tools.',
     }),
     generateLabel: t('flowEditor.emptyState.generateWithFlowpilot', {
-      defaultValue: 'Generate with Flowpilot',
+      defaultValue: 'Generar con AI Mapper',
     }),
     templatesLabel: t('flowEditor.emptyState.browseTemplates', {
       defaultValue: 'Browse templates',

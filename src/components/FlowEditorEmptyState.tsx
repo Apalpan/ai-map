@@ -85,7 +85,7 @@ export function FlowEditorEmptyState({
                         type="button"
                     >
                         <Keyboard className="h-[13px] w-[13px] text-[var(--brand-secondary)]" strokeWidth={2} />
-                        <span className="text-[12px] text-[var(--brand-secondary)]">View keyboard shortcuts</span>
+              <span className="text-[12px] text-[var(--brand-secondary)]">Ver atajos de teclado</span>
                         <kbd className="inline-flex h-[18px] items-center justify-center rounded-[4px] border border-[var(--color-brand-border)] bg-[var(--brand-background)] px-[5px] font-mono text-[10px] font-bold text-[var(--brand-secondary)]">
                             ?
                         </kbd>

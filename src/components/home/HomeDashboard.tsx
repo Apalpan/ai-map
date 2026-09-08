@@ -10,13 +10,13 @@ import {
   FileInput,
   ShieldCheck,
 } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
 import { Button } from '../ui/Button';
 import { Tooltip } from '../Tooltip';
 import type { WorkspaceDocumentPreview } from '@/store/workspaceDocumentModel';
 import { recordOnboardingEvent } from '@/services/onboarding/events';
+import { AIMapIntake } from './AIMapIntake';
 
-const AUTOSAVED_LABEL = 'Autosaved';
+const AUTOSAVED_LABEL = 'Guardado automáticamente';
 
 export interface HomeFlowCard {
   id: string;
@@ -33,6 +33,8 @@ interface HomeDashboardProps {
   onCreateNew: () => void;
   onOpenTemplates: () => void;
   onPromptWithAI: () => void;
+  onGenerateAIMap: (prompt: string) => void;
+  onCreateLocalMap: (dsl: string) => void;
   onImportJSON: () => void;
   onOpenFlow: (flowId: string) => void;
   onRenameFlow: (flowId: string) => void;
@@ -45,13 +47,14 @@ export function HomeDashboard({
   onCreateNew,
   onOpenTemplates,
   onPromptWithAI,
+  onGenerateAIMap,
+  onCreateLocalMap,
   onImportJSON,
   onOpenFlow,
   onRenameFlow,
   onDuplicateFlow,
   onDeleteFlow,
 }: HomeDashboardProps): React.ReactElement {
-  const { t } = useTranslation();
   const hasFlows = flows.length > 0;
   const secondaryActionIconClass =
     'h-4 w-4 text-[var(--brand-secondary)] transition-transform duration-300 group-hover:scale-110';
@@ -81,34 +84,38 @@ export function HomeDashboard({
       <div className="mb-8 flex flex-col gap-4 md:mb-12 md:flex-row md:items-end md:justify-between">
         <div>
           <h1 className="text-2xl font-semibold text-[var(--brand-text)] tracking-tight mb-1">
-            {t('home.title', 'Dashboard')}
+            AI Map
           </h1>
           <p className="text-[var(--brand-secondary)] text-sm">
-            {t('home.description', 'Manage your flows and diagrams.')}
+            Convierte contexto disperso en procesos, decisiones y acciones verificables.
           </p>
         </div>
-        <Button
-          onClick={handleCreateNew}
-          data-testid="home-create-new-header"
-          variant="primary"
-          size="sm"
-        >
-          <Plus className="w-3.5 h-3.5" strokeWidth={2.5} />
-          {t('home.createNew', 'Create new')}
-        </Button>
+        <div className="hidden md:block">
+          <Button
+            onClick={handleCreateNew}
+            data-testid="home-create-new-header"
+            variant="secondary"
+            size="sm"
+          >
+            <Plus className="w-3.5 h-3.5" strokeWidth={2.5} />
+            Lienzo en blanco
+          </Button>
+        </div>
       </div>
 
-      <section>
+      <AIMapIntake
+        onGenerateWithAI={onGenerateAIMap}
+        onCreateLocalMap={onCreateLocalMap}
+      />
+
+      <section className="mt-12">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-2">
             <h2 className="text-xs font-semibold text-[var(--brand-secondary)] uppercase tracking-wider">
-              {t('home.recentFiles', 'Recent Files')}
+              Mapas de proyecto
             </h2>
             <Tooltip
-              text={t(
-                'home.localStorageHint',
-                'Autosaved on this device. We do not upload your diagram data to our servers.'
-              )}
+              text="Guardados en este dispositivo. AI Map no sube tus diagramas a un servidor propio."
               side="right"
             >
               <div className="flex cursor-default items-center justify-center text-[var(--brand-primary)] hover:brightness-110 transition-all duration-200">
@@ -123,7 +130,7 @@ export function HomeDashboard({
           </div>
           {hasFlows && (
             <span className="text-xs text-[var(--brand-secondary)]">
-              {flows.length} {t('home.files', 'files')}
+              {flows.length} {flows.length === 1 ? 'mapa' : 'mapas'}
             </span>
           )}
         </div>
@@ -149,13 +156,10 @@ export function HomeDashboard({
                 </div>
 
                 <h2 className="text-[24px] sm:text-[28px] font-bold tracking-tight text-[var(--brand-text)] mb-2">
-                  {t('home.homeEmptyTitle', 'Create your first flow')}
+                  Tu espacio de trabajo está listo
                 </h2>
                 <p className="text-[14px] text-[var(--brand-secondary)] max-w-[500px] mb-8 leading-relaxed">
-                  {t(
-                    'home.homeEmptySubtitle',
-                    'Design enterprise-grade architectures instantly. Start from a blank canvas, describe your infrastructure with our AI builder, or use a tailored template.'
-                  )}
+                  Usa la entrada superior para crear tu primer mapa, o abre una herramienta de inicio rápido.
                 </p>
 
                 {/* Action Grid strictly inside the card */}
@@ -168,7 +172,7 @@ export function HomeDashboard({
                     className="w-full text-[14.5px]"
                   >
                     <Plus className="w-4 h-4" strokeWidth={2.5} />{' '}
-                    {t('home.homeBlankCanvas', 'Blank Canvas')}
+                    Mapa en blanco
                   </Button>
 
                   <Button
@@ -179,7 +183,7 @@ export function HomeDashboard({
                     className="w-full text-[14.5px] group"
                   >
                     <WandSparkles className={secondaryActionIconClass} strokeWidth={2} />{' '}
-                    {t('home.homeFlowpilotAI', 'Flowpilot AI')}
+                    Abrir AI Mapper
                   </Button>
 
                   <Button
@@ -190,13 +194,13 @@ export function HomeDashboard({
                     className="w-full text-[14.5px]"
                   >
                     <LayoutTemplate className={secondaryActionIconClass} strokeWidth={2} />{' '}
-                    {t('home.homeTemplates', 'Templates')}
+                    Mapas modelo
                   </Button>
                 </div>
 
                 <div className="mt-8 flex items-center justify-center pt-6 border-t border-[var(--color-brand-border)]/60 w-full max-w-[640px]">
                   <ImportExistingFileButton
-                    label={t('home.homeImportFile', 'Or import an existing file')}
+                    label="o importa un mapa existente"
                     onClick={handleImportJSON}
                   />
                 </div>
@@ -217,14 +221,14 @@ export function HomeDashboard({
                   {/* Sleek Floating Actions Pill */}
                   <div className="absolute right-3 top-3 z-20 flex items-center gap-0.5 rounded-full border border-[color-mix(in_srgb,var(--color-brand-border),white_10%)] bg-[var(--brand-surface)]/80 backdrop-blur-md p-1 opacity-0 transform translate-y-[-4px] transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:translate-y-0 shadow-lg">
                     <FlowCardActionButton
-                      label={t('common.rename', 'Rename')}
+                      label="Renombrar"
                       onClick={() => onRenameFlow(flow.id)}
                       hoverClassName="hover:bg-[var(--brand-primary)]/10 hover:text-[var(--brand-primary)] focus-visible:ring-[var(--brand-primary)]"
                     >
                       <Pencil className="h-3 w-3" />
                     </FlowCardActionButton>
                     <FlowCardActionButton
-                      label={t('common.duplicate', 'Duplicate')}
+                      label="Duplicar"
                       onClick={() => onDuplicateFlow(flow.id)}
                       hoverClassName="hover:bg-[var(--brand-primary)]/10 hover:text-[var(--brand-primary)] focus-visible:ring-[var(--brand-primary)]"
                     >
@@ -233,7 +237,7 @@ export function HomeDashboard({
                     {/* Divider */}
                     <div className="h-3 w-[1px] bg-[var(--color-brand-border)] mx-0.5"></div>
                     <FlowCardActionButton
-                      label={t('common.delete', 'Delete')}
+                      label="Eliminar"
                       onClick={() => onDeleteFlow(flow.id)}
                       hoverClassName="hover:bg-red-500/10 hover:text-red-500 focus-visible:ring-red-500"
                     >
@@ -249,13 +253,13 @@ export function HomeDashboard({
                     <span>{formatUpdatedAt(flow.updatedAt)}</span>
                     <div className="h-[3px] w-[3px] rounded-full bg-[color-mix(in_srgb,var(--brand-secondary),transparent_50%)]"></div>
                     <span>
-                      {flow.nodeCount} node{flow.nodeCount !== 1 ? 's' : ''}
+                      {flow.nodeCount} {flow.nodeCount === 1 ? 'nodo' : 'nodos'}
                     </span>
                     {flow.isActive && (
                       <>
                         <div className="h-[3px] w-[3px] rounded-full bg-[color-mix(in_srgb,var(--brand-secondary),transparent_50%)]"></div>
                         <span className="text-[var(--brand-primary)]">
-                          {t('home.currentFlow', 'Current')}
+                          Mapa actual
                         </span>
                       </>
                     )}

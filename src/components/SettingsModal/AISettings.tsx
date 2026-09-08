@@ -127,7 +127,7 @@ export function AISettings(): React.ReactElement {
             {/* Header Text */}
             <div className="space-y-1">
                 <div className="flex items-center justify-between">
-                    <h3 className="text-base font-semibold text-[var(--brand-text)]">{t('settingsModal.flowpilotConfigurations', { defaultValue: 'Flowpilot Configuration' })}</h3>
+      <h3 className="text-base font-semibold text-[var(--brand-text)]">{t('settingsModal.flowpilotConfigurations', { defaultValue: 'Configuración de AI Mapper' })}</h3>
                     <a href={buildDocsSiteUrl('prompting-agents')} target="_blank" rel="noopener noreferrer" className="text-[10px] font-semibold text-[var(--brand-primary)] hover:underline flex items-center gap-1">
                         Prompting Guide <ExternalLink className="w-3 h-3" />
                     </a>

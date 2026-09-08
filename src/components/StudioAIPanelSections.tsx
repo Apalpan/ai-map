@@ -633,7 +633,7 @@ export function ComposerSection({
               disabled={isInputEmpty}
               className={`flex h-8 w-8 items-center justify-center rounded-full border transition-all flex-shrink-0 ${getPrimaryComposerClassName(isInputEmpty, isBeveled)} ${!isInputEmpty ? 'active:scale-95' : ''}`}
               aria-label={t('ai.generateWithFlowpilot', {
-                defaultValue: 'Generate with Flowpilot',
+            defaultValue: 'Generar con AI Mapper',
               })}
               title={sendButtonLabel}
               type="button"

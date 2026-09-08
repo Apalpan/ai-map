@@ -1,5 +1,6 @@
 import { useCallback, useEffect } from 'react';
 import {
+    getInitialFlowEditorAIPrompt,
     getInitialFlowEditorTemplateId,
     shouldOpenFlowEditorAI,
     shouldOpenFlowEditorTemplates,
@@ -338,6 +339,10 @@ export function useFlowEditorController({
 
     useEffect(() => {
         if (!shouldOpenFlowEditorAI(shell.location.state)) return;
+        const initialPrompt = getInitialFlowEditorAIPrompt(shell.location.state);
+        if (initialPrompt) {
+            chromeParams.setPendingAIPrompt(initialPrompt);
+        }
         openStudioAI();
         shell.navigate(
             { pathname: shell.location.pathname, search: shell.location.search, hash: shell.location.hash },
