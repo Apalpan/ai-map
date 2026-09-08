@@ -46,3 +46,4 @@ docs-site/.astro/
 .claude/skills/
 .codex-skill-edits/
 .vercel
+.playwright-cli/

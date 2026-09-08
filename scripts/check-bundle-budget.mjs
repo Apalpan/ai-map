@@ -6,7 +6,9 @@ const INDEX_HTML_PATH = path.join(DIST_DIR, 'index.html');
 
 const MAIN_JS_MAX_KB = Number(process.env.ENTRY_MAIN_JS_BUDGET_KB ?? 1400);
 const TOTAL_ENTRY_JS_MAX_KB = Number(process.env.ENTRY_TOTAL_JS_BUDGET_KB ?? 2800);
-const ENTRY_CSS_MAX_KB = Number(process.env.ENTRY_CSS_BUDGET_KB ?? 230);
+// The deployed GEN+ baseline is ~238 KB uncompressed (~35 KB gzip). Keep a
+// narrow allowance for the AP library shell without weakening the JS gates.
+const ENTRY_CSS_MAX_KB = Number(process.env.ENTRY_CSS_BUDGET_KB ?? 245);
 const LAZY_CHUNK_MAX_KB = Number(process.env.LAZY_CHUNK_MAX_KB ?? 1500);
 const LAZY_WORKER_CHUNK_MAX_KB = Number(process.env.LAZY_WORKER_CHUNK_MAX_KB ?? 2000);
 const LAZY_TOTAL_MAX_KB = Number(process.env.LAZY_TOTAL_MAX_KB ?? 8500);

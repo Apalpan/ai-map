@@ -7,8 +7,10 @@ import { HomeMCPView } from './home/HomeMCPView';
 import { HomeSettingsView } from './home/HomeSettingsView';
 import { HomeSidebar } from './home/HomeSidebar';
 import { HomeTemplatesView } from './home/HomeTemplatesView';
+import { APLibraryView } from './home/APLibraryView';
+import { PanelLeftOpen } from 'lucide-react';
 
-type HomePageTab = 'home' | 'templates' | 'settings' | 'mcp';
+type HomePageTab = 'home' | 'library' | 'templates' | 'settings' | 'mcp';
 type HomeSettingsTab = 'general' | 'canvas' | 'shortcuts' | 'ai' | 'mcp';
 
 interface HomePageProps {
@@ -43,6 +45,7 @@ export const HomePage: React.FC<HomePageProps> = ({
   const [activeSettingsTab, setActiveSettingsTab] = useState<HomeSettingsTab>('general');
   const [flowPendingRename, setFlowPendingRename] = useState<HomeFlowCard | null>(null);
   const [flowPendingDelete, setFlowPendingDelete] = useState<HomeFlowCard | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const activeTab = propActiveTab ?? internalActiveTab;
   const flows: HomeFlowCard[] = hasWorkspaceDocuments ? documents : [];
@@ -106,12 +109,24 @@ export const HomePage: React.FC<HomePageProps> = ({
 
   return (
     <div className="min-h-screen bg-[var(--brand-background)] flex flex-col text-[var(--brand-text)] md:flex-row">
-      <HomeSidebar activeTab={activeTab} onTabChange={handleTabChange} />
+      {sidebarOpen ? (
+        <HomeSidebar activeTab={activeTab} onTabChange={handleTabChange} onHide={() => setSidebarOpen(false)} />
+      ) : (
+        <button
+          type="button"
+          onClick={() => setSidebarOpen(true)}
+          className="fixed left-3 top-3 z-30 inline-flex min-h-11 items-center gap-2 rounded-xl border border-[var(--brand-border)] bg-white px-3 text-sm font-semibold text-[var(--brand-text)] shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)]"
+          aria-label="Mostrar navegación"
+        >
+          <PanelLeftOpen className="h-4 w-4" aria-hidden="true" />
+          <span className="hidden sm:inline">Menú</span>
+        </button>
+      )}
 
       {/* Main Content */}
       <main
         id="main-content"
-        className="flex-1 flex min-w-0 flex-col bg-[var(--brand-surface)] md:ml-64"
+        className={`flex min-w-0 flex-1 flex-col bg-[var(--brand-surface)] transition-[margin] ${sidebarOpen ? 'md:ml-64' : ''}`}
       >
         {activeTab === 'home' && (
           <HomeDashboard
@@ -126,14 +141,17 @@ export const HomePage: React.FC<HomePageProps> = ({
             onRenameFlow={handleRenameFlow}
             onDuplicateFlow={handleDuplicateFlow}
             onDeleteFlow={handleDeleteFlow}
+            onOpenLibrary={() => handleTabChange('library')}
           />
         )}
+
+        {activeTab === 'library' && <APLibraryView onCreateLocalMap={onCreateLocalMap} />}
 
         {activeTab === 'templates' && (
           <HomeTemplatesView onUseTemplate={onLaunchWithTemplate} />
         )}
 
-        {activeTab === 'mcp' && <HomeMCPView />}
+        {activeTab === 'mcp' && <HomeMCPView onOpenLibrary={() => handleTabChange('library')} />}
 
         {activeTab === 'settings' && (
           <HomeSettingsView

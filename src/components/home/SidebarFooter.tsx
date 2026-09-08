@@ -34,7 +34,9 @@ export function SidebarFooter(): React.ReactElement {
                 {/* Language button — flag + name + chevron, fully clickable */}
                 <div className="relative flex-1">
                     <button
+                        type="button"
                         onClick={() => setLangOpen((o) => !o)}
+                        aria-label="Cambiar idioma"
                         className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-[var(--brand-text-muted)] transition-all hover:bg-[var(--brand-background)] hover:text-[var(--brand-text)]"
                         title="Change language"
                     >
@@ -94,7 +96,9 @@ export function SidebarFooter(): React.ReactElement {
 
                 {/* Theme toggle */}
                 <button
+                    type="button"
                     onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
+                    aria-label={resolvedTheme === 'dark' ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'}
                     className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[var(--brand-text-muted)] transition-all hover:bg-[var(--brand-background)] hover:text-[var(--brand-text)]"
                     title={resolvedTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
                 >

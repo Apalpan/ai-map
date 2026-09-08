@@ -87,6 +87,28 @@ describe('HomePage integration flows', () => {
     expect(screen.getByText('AI Mapper')).toBeTruthy();
   });
 
+  it('opens Biblioteca AP and creates a source-grounded editable map', async () => {
+    const onCreateLocalMap = vi.fn();
+    await renderHomePage({ onCreateLocalMap });
+
+    fireEvent.click(screen.getByTestId('sidebar-library'));
+    expect(screen.getByRole('heading', { name: 'Casos, procesos y agentes explicados para actuar.' })).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Crear mapa editable' }));
+
+    expect(onCreateLocalMap).toHaveBeenCalledTimes(1);
+    expect(onCreateLocalMap.mock.calls[0][0]).toContain('Decisión humana:');
+  });
+
+  it('hides and reopens the home sidebar while freeing the content area', async () => {
+    await renderHomePage();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Ocultar navegación lateral' }));
+    expect(screen.queryByTestId('sidebar-home')).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Mostrar navegación' }));
+    expect(screen.getByTestId('sidebar-home')).toBeTruthy();
+    expect(screen.getByAltText('Retrato de Alejandro Palpan')).toBeTruthy();
+  });
+
   it('shows AI Map intake immediately on a first visit without a blocking legacy modal', async () => {
     setEmptyHomeState();
 

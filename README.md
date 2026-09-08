@@ -4,6 +4,12 @@
 
 AI Map convierte un brief, una minuta, un alcance o una carpeta local en un mapa editable de procesos, decisiones, riesgos, evidencias y siguientes acciones. La experiencia GEN+ es light-first, usa exclusivamente Plus Jakarta Sans y conserva el control humano antes de aplicar o publicar cualquier recomendación.
 
+## Biblioteca AP
+
+La ruta `#/library` contiene un snapshot sanitizado del 8 de septiembre de 2026 con 12 casos prioritarios, 12 procesos derivados, 7 plantillas y 11 agentes. Permite buscar, filtrar, revisar trazabilidad y crear un mapa editable desde cualquier ficha. El catálogo es una síntesis segura para la interfaz: no incluye rutas locales, secretos ni contenido privado del vault, y no implica que los agentes o conexiones externas estén configurados.
+
+Inicio mantiene tres entradas rápidas: mapear un proyecto, auditar un proceso o usar una plantilla. Las plantillas técnicas heredadas permanecen disponibles como opción secundaria.
+
 ## Probar localmente
 
 ```bash

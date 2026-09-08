@@ -169,7 +169,7 @@ export function FlowEditor({ onGoHome }: FlowEditorProps) {
           style={{
             background: cinematicExportState.active
               ? cinematicExportTheme.surfaceBackground
-              : 'var(--brand-background)',
+              : 'linear-gradient(135deg,#f7faff 0%,#eaf4ff 48%,#f5fbff 100%)',
           }}
         >
           <CinematicExportOverlay />

@@ -178,7 +178,7 @@ function EditorRouteGate({ children }: { children: React.ReactNode }): React.JSX
   const navigate = useNavigate();
 
   return (
-    <MobileWorkspaceGate onOpenDocs={() => navigate('/docs')} onGoHome={() => navigate('/home')}>
+    <MobileWorkspaceGate onOpenLibrary={() => navigate('/library')} onGoHome={() => navigate('/home')}>
       {children}
     </MobileWorkspaceGate>
   );
@@ -235,6 +235,7 @@ function AuthenticatedApp(): React.JSX.Element {
             }
           />
           <Route path="/home" element={<HomePageRoute />} />
+          <Route path="/library" element={<HomePageRoute />} />
           <Route path="/templates" element={<HomePageRoute />} />
           <Route path="/mcp" element={<HomePageRoute />} />
           <Route path="/settings" element={<HomePageRoute />} />
@@ -277,12 +278,14 @@ function App(): React.JSX.Element {
   );
 }
 
-function getHomePageTab(pathname: string): 'home' | 'templates' | 'settings' | 'mcp' {
+function getHomePageTab(pathname: string): 'home' | 'library' | 'templates' | 'settings' | 'mcp' {
   switch (pathname) {
     case '/settings':
       return 'settings';
     case '/templates':
       return 'templates';
+    case '/library':
+      return 'library';
     case '/mcp':
       return 'mcp';
     default:
@@ -290,12 +293,14 @@ function getHomePageTab(pathname: string): 'home' | 'templates' | 'settings' | '
   }
 }
 
-function getHomePagePath(tab: 'home' | 'templates' | 'settings' | 'mcp'): string {
+function getHomePagePath(tab: 'home' | 'library' | 'templates' | 'settings' | 'mcp'): string {
   switch (tab) {
     case 'settings':
       return '/settings';
     case 'templates':
       return '/templates';
+    case 'library':
+      return '/library';
     case 'mcp':
       return '/mcp';
     default:

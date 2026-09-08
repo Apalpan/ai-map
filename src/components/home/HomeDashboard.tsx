@@ -39,6 +39,7 @@ interface HomeDashboardProps {
   onRenameFlow: (flowId: string) => void;
   onDuplicateFlow: (flowId: string) => void;
   onDeleteFlow: (flowId: string) => void;
+  onOpenLibrary: () => void;
 }
 
 export function HomeDashboard({
@@ -52,6 +53,7 @@ export function HomeDashboard({
   onRenameFlow,
   onDuplicateFlow,
   onDeleteFlow,
+  onOpenLibrary,
 }: HomeDashboardProps): React.ReactElement {
   const hasFlows = flows.length > 0;
   function handleCreateNew(): void {
@@ -92,6 +94,24 @@ export function HomeDashboard({
           </Button>
         </div>
       </div>
+
+      <section className="mb-8 rounded-2xl border border-[#cfe0ff] bg-[linear-gradient(135deg,#f7faff_0%,#eaf4ff_48%,#f5fbff_100%)] p-5 sm:p-6" aria-labelledby="ap-summary-title">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+          <div className="max-w-3xl">
+            <p className="text-xs font-bold uppercase tracking-[0.14em] text-[var(--action)]">Snapshot curado · 8 sep 2026</p>
+            <h2 id="ap-summary-title" className="mt-2 text-xl font-bold tracking-tight text-[var(--brand-text)]">Biblioteca AP: 12 casos, 12 procesos, 7 plantillas y 11 agentes.</h2>
+            <p className="mt-2 text-sm leading-6 text-[var(--brand-secondary)]">Explora cómo trabaja el ecosistema, revisa el estado real y convierte cualquier ficha en un mapa editable.</p>
+          </div>
+          <button type="button" onClick={onOpenLibrary} className="inline-flex min-h-12 shrink-0 items-center justify-center rounded-xl bg-[var(--action)] px-5 text-sm font-bold text-white shadow-[0_10px_24px_rgba(33,101,255,0.22)] hover:bg-[#1b57df] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2">
+            Abrir Biblioteca AP
+          </button>
+        </div>
+        <div className="mt-5 grid gap-2 sm:grid-cols-3" aria-label="Sugerencias de inicio">
+          {['Mapear proyecto', 'Auditar proceso', 'Usar plantilla'].map((tip) => (
+            <div key={tip} className="rounded-xl border border-white/80 bg-white/70 px-4 py-3 text-sm font-semibold text-[var(--brand-text)] shadow-sm">{tip}</div>
+          ))}
+        </div>
+      </section>
 
       <AIMapIntake onGenerateWithAI={onGenerateAIMap} onCreateLocalMap={onCreateLocalMap} />
 
@@ -162,13 +182,19 @@ export function HomeDashboard({
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             {flows.map((flow) => (
-              <div
+              <article
                 key={flow.id}
-                onClick={() => onOpenFlow(flow.id)}
-                className="group relative cursor-pointer flex flex-col overflow-hidden rounded-[16px] border border-[color-mix(in_srgb,var(--color-brand-border),transparent_50%)] bg-[var(--brand-surface)] transition-all duration-300 hover:border-[var(--brand-primary-400)]/40 hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] hover:-translate-y-0.5"
+                className="group relative flex flex-col overflow-hidden rounded-[16px] border border-[color-mix(in_srgb,var(--color-brand-border),transparent_50%)] bg-[var(--brand-surface)] transition-all duration-300 hover:border-[var(--brand-primary-400)]/40 hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] hover:-translate-y-0.5"
               >
                 <div className="relative flex h-[160px] w-full items-center justify-center overflow-hidden border-b border-[color-mix(in_srgb,var(--color-brand-border),transparent_50%)] bg-[var(--brand-background)]">
                   <FlowPreview preview={flow.preview} />
+
+                  <button
+                    type="button"
+                    onClick={() => onOpenFlow(flow.id)}
+                    aria-label={`Abrir mapa ${flow.name}`}
+                    className="absolute inset-0 z-10 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--focus)]"
+                  />
 
                   {/* Sleek Floating Actions Pill */}
                   <div className="absolute right-3 top-3 z-20 flex items-center gap-0.5 rounded-full border border-[color-mix(in_srgb,var(--color-brand-border),white_10%)] bg-[var(--brand-surface)]/80 backdrop-blur-md p-1 opacity-0 transform translate-y-[-4px] transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:translate-y-0 shadow-lg">
@@ -198,8 +224,10 @@ export function HomeDashboard({
                   </div>
                 </div>
                 <div className="flex flex-col p-4 bg-[var(--brand-surface)] transition-colors group-hover:bg-[color-mix(in_srgb,var(--brand-surface),white_2%)]">
-                  <h3 className="font-semibold text-[13.5px] text-[var(--brand-text)] tracking-tight truncate mb-1.5 group-hover:text-[var(--brand-primary)] transition-colors">
-                    {flow.name}
+                  <h3 className="mb-1.5 truncate text-[13.5px] font-semibold tracking-tight">
+                    <button type="button" onClick={() => onOpenFlow(flow.id)} className="max-w-full truncate text-left text-[var(--brand-text)] transition-colors group-hover:text-[var(--brand-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)]">
+                      {flow.name}
+                    </button>
                   </h3>
                   <div className="flex items-center gap-2 text-[12px] font-medium text-[var(--brand-secondary)]">
                     <span>{formatUpdatedAt(flow.updatedAt)}</span>
@@ -215,7 +243,7 @@ export function HomeDashboard({
                     )}
                   </div>
                 </div>
-              </div>
+              </article>
             ))}
           </div>
         )}
