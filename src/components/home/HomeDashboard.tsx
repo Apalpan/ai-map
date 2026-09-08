@@ -99,7 +99,7 @@ export function HomeDashboard({
         <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
           <div className="max-w-3xl">
             <p className="text-xs font-bold uppercase tracking-[0.14em] text-[var(--action)]">Snapshot curado · 8 sep 2026</p>
-            <h2 id="ap-summary-title" className="mt-2 text-xl font-bold tracking-tight text-[var(--brand-text)]">Biblioteca AP: 12 casos, 12 procesos, 7 plantillas y 11 agentes.</h2>
+            <h2 id="ap-summary-title" className="mt-2 text-xl font-bold tracking-tight text-[var(--brand-text)]">Biblioteca AP: 13 casos, 13 procesos, 10 plantillas y 11 agentes.</h2>
             <p className="mt-2 text-sm leading-6 text-[var(--brand-secondary)]">Explora cómo trabaja el ecosistema, revisa el estado real y convierte cualquier ficha en un mapa editable.</p>
           </div>
           <button type="button" onClick={onOpenLibrary} className="inline-flex min-h-12 shrink-0 items-center justify-center rounded-xl bg-[var(--action)] px-5 text-sm font-bold text-white shadow-[0_10px_24px_rgba(33,101,255,0.22)] hover:bg-[#1b57df] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2">

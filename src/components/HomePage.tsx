@@ -6,7 +6,6 @@ import { HomeFlowDeleteDialog, HomeFlowRenameDialog } from './home/HomeFlowDialo
 import { HomeMCPView } from './home/HomeMCPView';
 import { HomeSettingsView } from './home/HomeSettingsView';
 import { HomeSidebar } from './home/HomeSidebar';
-import { HomeTemplatesView } from './home/HomeTemplatesView';
 import { APLibraryView } from './home/APLibraryView';
 import { PanelLeftOpen } from 'lucide-react';
 
@@ -29,7 +28,6 @@ interface HomePageProps {
 export const HomePage: React.FC<HomePageProps> = ({
   onLaunch,
   onLaunchWithTemplates,
-  onLaunchWithTemplate,
   onLaunchWithAI,
   onGenerateAIMap,
   onCreateLocalMap,
@@ -147,9 +145,7 @@ export const HomePage: React.FC<HomePageProps> = ({
 
         {activeTab === 'library' && <APLibraryView onCreateLocalMap={onCreateLocalMap} />}
 
-        {activeTab === 'templates' && (
-          <HomeTemplatesView onUseTemplate={onLaunchWithTemplate} />
-        )}
+        {activeTab === 'templates' && <APLibraryView onCreateLocalMap={onCreateLocalMap} initialTab="templates" />}
 
         {activeTab === 'mcp' && <HomeMCPView onOpenLibrary={() => handleTabChange('library')} />}
 

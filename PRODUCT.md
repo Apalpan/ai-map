@@ -19,11 +19,12 @@ En menos de cinco minutos, transforma una descripción, acta, alcance o brief en
 
 ## Biblioteca AP · snapshot 2026-09-08
 
-- 12 casos prioritarios y 12 procesos derivados del catálogo curado; no es un inventario exhaustivo del ecosistema.
-- 7 plantillas AP: captura de proceso, automatización, agente, playbook, spec app, decision record y skill/evidencia AECODE.
+- 13 casos prioritarios y 13 procesos derivados del catálogo curado; incluye ESPARQ y no es un inventario exhaustivo del ecosistema.
+- 10 plantillas AP: tres blueprints técnicos source-grounded (VisionPro, AECODE F3 y ESPARQ) más captura de proceso, automatización, agente, playbook, spec app, decision record y skill/evidencia AECODE.
 - 11 fichas de agentes con problema, disparador, inputs, capacidades, resultado, control humano, fallback y evidencia.
 - Estados permitidos: `Confirmado`, `Documentado`, `WIP` y `Requiere validación`.
 - AgentFlow e ICEBOT permanecen WIP. VisionPro se describe únicamente como prototipo operativo en piloto.
+- Los blueprints separan realidad actual, arquitectura objetivo, entidades, integraciones, despliegue, documentación, gates y exclusiones. Toda integración o escala no probada conserva el estado `Requiere validación`.
 - El snapshot se publica como datos TypeScript separados del store del canvas y no contiene rutas locales, secretos ni transcripciones privadas.
 
 ## Entidades iniciales

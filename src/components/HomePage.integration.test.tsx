@@ -79,8 +79,8 @@ describe('HomePage integration flows', () => {
     await renderHomePage();
 
     fireEvent.click(screen.getByTestId('sidebar-templates'));
-    expect(screen.getByRole('heading', { name: 'Templates' })).toBeTruthy();
-    expect(screen.getByText('Featured Templates')).toBeTruthy();
+    expect(screen.getByRole('heading', { name: 'Proceso y arquitectura, en una plantilla que sí se entiende.' })).toBeTruthy();
+    expect(screen.getAllByText('Blueprint técnico · VisionPro').length).toBeGreaterThan(0);
 
     fireEvent.click(screen.getByTestId('sidebar-settings'));
     expect(screen.getByRole('heading', { name: 'Settings' })).toBeTruthy();
@@ -122,26 +122,15 @@ describe('HomePage integration flows', () => {
     expect(screen.queryByText('Welcome to OpenFlowKit')).toBeNull();
   });
 
-  it('opens the selected template flow from the homepage templates tab', async () => {
-    const onLaunchWithTemplate = vi.fn();
-
-    await renderHomePage({ onLaunchWithTemplate });
-
-    fireEvent.click(screen.getByTestId('sidebar-templates'));
-    fireEvent.click(screen.getByRole('button', { name: /AWS Event-Driven SaaS Platform/i }));
-    fireEvent.click(screen.getByRole('button', { name: 'Use Template' }));
-
-    expect(onLaunchWithTemplate).toHaveBeenCalledTimes(1);
-    expect(onLaunchWithTemplate).toHaveBeenCalledWith('aws-event-driven-saas-platform');
-  });
-
-  it('shows only explicitly featured templates on the homepage templates tab', async () => {
-    await renderHomePage();
+  it('creates the selected AP technical blueprint from the templates route', async () => {
+    const onCreateLocalMap = vi.fn();
+    await renderHomePage({ onCreateLocalMap });
 
     fireEvent.click(screen.getByTestId('sidebar-templates'));
+    fireEvent.click(screen.getAllByRole('button', { name: 'Crear mapa técnico editable' })[0]);
 
-    expect(screen.getByRole('button', { name: /AWS Event-Driven SaaS Platform/i })).toBeTruthy();
-    expect(screen.queryByRole('button', { name: /Product Discovery Workshop Map/i })).toBeNull();
+    expect(onCreateLocalMap).toHaveBeenCalledTimes(1);
+    expect(onCreateLocalMap.mock.calls[0][0]).toContain('architecture_deployment');
   });
 
   it('exposes templates and the progressive AI Mapper path in the empty dashboard state', async () => {

@@ -63,7 +63,16 @@ export function APLibraryView({
   const filteredItems = useMemo(() => {
     const normalizedQuery = query.trim().toLocaleLowerCase('es');
     return AP_LIBRARY_BY_TAB[activeTab].filter((item) => {
-      const matchesQuery = !normalizedQuery || [item.title, item.summary, item.purpose, item.owner]
+      const blueprintSearch = item.kind === 'template' && item.templateType === 'technical-blueprint'
+        ? [
+            item.blueprint.currentTruth,
+            item.blueprint.targetOutcome,
+            ...item.blueprint.layers.flatMap((layer) => [layer.title, layer.purpose, ...layer.components]),
+            ...item.blueprint.entities,
+            ...item.blueprint.technicalDocumentation.map((document) => document.title),
+          ]
+        : [];
+      const matchesQuery = !normalizedQuery || [item.title, item.summary, item.purpose, item.owner, ...blueprintSearch]
         .join(' ')
         .toLocaleLowerCase('es')
         .includes(normalizedQuery);
@@ -74,6 +83,15 @@ export function APLibraryView({
   const selectedItem = filteredItems.find((item) => item.id === selectedId)
     ?? filteredItems[0]
     ?? null;
+  const isTemplateView = activeTab === 'templates';
+  const filteredBlueprints = isTemplateView
+    ? filteredItems.filter((item) => item.kind === 'template' && item.templateType === 'technical-blueprint')
+    : [];
+  const filteredOperationalTemplates = isTemplateView
+    ? filteredItems.filter((item) => item.kind === 'template' && item.templateType === 'operational')
+    : [];
+  const blueprintCount = AP_LIBRARY_BY_TAB.templates.filter((item) => item.kind === 'template' && item.templateType === 'technical-blueprint').length;
+  const operationalTemplateCount = AP_LIBRARY_BY_TAB.templates.length - blueprintCount;
 
   useEffect(() => {
     function closeOnEscape(event: KeyboardEvent): void {
@@ -130,14 +148,15 @@ export function APLibraryView({
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-3xl">
             <p className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-[var(--action)]">
-              <Library className="h-4 w-4" aria-hidden="true" /> Biblioteca AP
+              <Library className="h-4 w-4" aria-hidden="true" /> {isTemplateView ? 'Blueprints técnicos AP' : 'Biblioteca AP'}
             </p>
             <h1 className="text-3xl font-bold tracking-[-0.035em] text-[var(--brand-text)] sm:text-4xl">
-              Casos, procesos y agentes explicados para actuar.
+              {isTemplateView ? 'Proceso y arquitectura, en una plantilla que sí se entiende.' : 'Casos, procesos y agentes explicados para actuar.'}
             </h1>
             <p className="mt-3 max-w-2xl text-sm leading-6 text-[var(--brand-secondary)]">
-              Catálogo sanitizado derivado de fuentes curadas. Cada ficha separa estado,
-              evidencia, control humano y siguiente acción; no expone rutas privadas ni secretos.
+              {isTemplateView
+                ? 'VisionPro, AECODE F3 y ESPARQ convierten documentación curada en un blueprint editable. Cada capa distingue realidad actual, objetivo y validaciones pendientes.'
+                : 'Catálogo sanitizado derivado de fuentes curadas. Cada ficha separa estado, evidencia, control humano y siguiente acción; no expone rutas privadas ni secretos.'}
             </p>
           </div>
           <div className="shrink-0 rounded-xl border border-[var(--brand-border)] bg-white px-4 py-3 text-sm shadow-sm">
@@ -176,12 +195,12 @@ export function APLibraryView({
 
         <div className="mt-5 grid gap-3 md:grid-cols-[minmax(240px,1fr)_180px_210px_auto]">
           <label className="relative block">
-            <span className="sr-only">Buscar en Biblioteca AP</span>
+            <span className="sr-only">{isTemplateView ? 'Buscar blueprint o capa' : 'Buscar en Biblioteca AP'}</span>
             <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--brand-secondary)]" aria-hidden="true" />
             <input
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Buscar por caso, problema u owner"
+              placeholder={isTemplateView ? 'Buscar blueprint o capa' : 'Buscar por caso, problema u owner'}
               className="min-h-11 w-full rounded-xl border border-[var(--brand-border)] bg-white pl-10 pr-3 text-base text-[var(--brand-text)] outline-none placeholder:text-[#65758f] focus:border-[var(--action)] focus:ring-2 focus:ring-[var(--action-soft)]"
             />
           </label>
@@ -231,28 +250,27 @@ export function APLibraryView({
               <h2 className="mt-4 text-base font-semibold text-[var(--brand-text)]">No encontramos resultados</h2>
               <p className="mt-2 text-sm text-[var(--brand-secondary)]">Prueba otra palabra o limpia los filtros activos.</p>
             </div>
-          ) : (
-            <div className={`grid gap-3 ${detailOpen ? 'grid-cols-1 2xl:grid-cols-2' : 'sm:grid-cols-2 xl:grid-cols-3'}`}>
-              {filteredItems.map((item) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => selectItem(item)}
-                  aria-pressed={selectedItem?.id === item.id && detailOpen}
-                  className={`group min-h-[168px] rounded-2xl border bg-white p-5 text-left shadow-sm transition-[border-color,box-shadow,transform] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] ${selectedItem?.id === item.id && detailOpen ? 'border-[var(--action)] shadow-[0_14px_32px_rgba(33,101,255,0.12)]' : 'border-[var(--brand-border)] hover:-translate-y-0.5 hover:border-[#8eb3ff] hover:shadow-md'}`}
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex flex-wrap gap-2">
-                      <span className="rounded-md bg-[#e9f0ff] px-2 py-1 text-[11px] font-bold text-[#0e2a6b]">{item.unit}</span>
-                      <StateBadge state={item.state} />
-                    </div>
-                    <ChevronRight className="h-4 w-4 shrink-0 text-[var(--brand-secondary)] transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
-                  </div>
-                  <h2 className="mt-4 text-base font-bold leading-6 text-[var(--brand-text)]">{item.title}</h2>
-                  <p className="mt-2 line-clamp-3 text-sm leading-5 text-[var(--brand-secondary)]">{item.summary}</p>
-                </button>
-              ))}
+          ) : isTemplateView ? (
+            <div className="space-y-8">
+              <LibraryCardGroup
+                title={`${blueprintCount} blueprints técnicos`}
+                emptyMessage="No hay blueprints técnicos que coincidan con estos filtros."
+                items={filteredBlueprints}
+                selectedId={selectedItem?.id}
+                detailOpen={detailOpen}
+                onSelect={selectItem}
+              />
+              <LibraryCardGroup
+                title={`${operationalTemplateCount} plantillas operativas`}
+                emptyMessage="No hay plantillas operativas que coincidan con estos filtros."
+                items={filteredOperationalTemplates}
+                selectedId={selectedItem?.id}
+                detailOpen={detailOpen}
+                onSelect={selectItem}
+              />
             </div>
+          ) : (
+            <LibraryCardGrid items={filteredItems} selectedId={selectedItem?.id} detailOpen={detailOpen} onSelect={selectItem} />
           )}
         </section>
 
@@ -265,6 +283,61 @@ export function APLibraryView({
           />
         ) : null}
       </div>
+    </div>
+  );
+}
+
+interface LibraryCardGridProps {
+  items: APLibraryItem[];
+  selectedId?: string;
+  detailOpen: boolean;
+  onSelect: (item: APLibraryItem) => void;
+}
+
+function LibraryCardGroup({ title, emptyMessage, ...gridProps }: LibraryCardGridProps & { title: string; emptyMessage: string }): React.ReactElement {
+  return (
+    <section aria-label={title}>
+      <h2 className="mb-3 text-sm font-bold text-[var(--brand-text)]">{title}</h2>
+      {gridProps.items.length > 0
+        ? <LibraryCardGrid {...gridProps} />
+        : <p className="rounded-xl border border-dashed border-[var(--brand-border)] bg-white px-4 py-5 text-sm text-[var(--brand-secondary)]">{emptyMessage}</p>}
+    </section>
+  );
+}
+
+function LibraryCardGrid({ items, selectedId, detailOpen, onSelect }: LibraryCardGridProps): React.ReactElement {
+  return (
+    <div className={`grid gap-3 ${detailOpen ? 'grid-cols-1 2xl:grid-cols-2' : 'sm:grid-cols-2 xl:grid-cols-3'}`}>
+      {items.map((item) => {
+        const technicalTemplate = item.kind === 'template' && item.templateType === 'technical-blueprint' ? item : null;
+        return (
+          <button
+            key={item.id}
+            type="button"
+            onClick={() => onSelect(item)}
+            aria-pressed={selectedId === item.id && detailOpen}
+            className={`group min-h-[168px] rounded-2xl border bg-white p-5 text-left shadow-sm transition-[border-color,box-shadow,transform] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] ${selectedId === item.id && detailOpen ? 'border-[var(--action)] shadow-[0_14px_32px_rgba(33,101,255,0.12)]' : 'border-[var(--brand-border)] hover:-translate-y-0.5 hover:border-[#8eb3ff] hover:shadow-md'}`}
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex flex-wrap gap-2">
+                <span className="rounded-md bg-[#e9f0ff] px-2 py-1 text-[11px] font-bold text-[#0e2a6b]">{item.unit}</span>
+                <StateBadge state={item.state} />
+              </div>
+              <ChevronRight className="h-4 w-4 shrink-0 text-[var(--brand-secondary)] transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+            </div>
+            {technicalTemplate ? (
+              <div className="mt-4 flex flex-wrap items-center gap-2 text-[11px] font-bold uppercase tracking-[0.1em] text-[var(--action)]">
+                <span>Blueprint técnico</span><span aria-hidden="true">·</span>
+                <span className="tabular-nums">{technicalTemplate.blueprint.layers.length} capas</span><span aria-hidden="true">·</span>
+                <span className="tabular-nums">{technicalTemplate.blueprint.technicalDocumentation.length} docs</span>
+              </div>
+            ) : null}
+            <h3 className={`${technicalTemplate ? 'mt-2' : 'mt-4'} text-base font-bold leading-6 text-[var(--brand-text)]`}>{item.title}</h3>
+            <p className="mt-2 line-clamp-2 text-sm leading-5 text-[var(--brand-secondary)]">{item.summary}</p>
+            {technicalTemplate ? <p className="mt-2 line-clamp-2 text-xs leading-5 text-[var(--brand-secondary)]"><span className="font-bold text-[var(--brand-text)]">Realidad actual:</span> {technicalTemplate.blueprint.currentTruth}</p> : null}
+          </button>
+        );
+      })}
     </div>
   );
 }
@@ -289,6 +362,7 @@ interface LibraryDetailProps {
 function LibraryDetail({ item, closeButtonRef, onClose, onCreateMap }: LibraryDetailProps): React.ReactElement {
   const agent = item.kind === 'agent' ? item as APAgent : null;
   const template = item.kind === 'template' ? item as APTemplate : null;
+  const technicalTemplate = template?.templateType === 'technical-blueprint' ? template : null;
   return (
     <aside aria-label={`Detalle de ${item.title}`} className="order-first max-h-none overflow-y-visible rounded-2xl border border-[var(--brand-border)] bg-white shadow-[0_22px_60px_rgba(14,42,107,0.12)] xl:sticky xl:top-5 xl:order-none xl:max-h-[calc(100vh-2.5rem)] xl:overflow-y-auto">
       <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-[var(--brand-border)] bg-white/95 px-5 py-4 backdrop-blur">
@@ -298,17 +372,33 @@ function LibraryDetail({ item, closeButtonRef, onClose, onCreateMap }: LibraryDe
         </button>
       </div>
       <div className="p-5 sm:p-6">
-        <div className="flex flex-wrap gap-2"><span className="rounded-md bg-[#e9f0ff] px-2 py-1 text-xs font-bold text-[#0e2a6b]">{item.unit}</span><StateBadge state={item.state} /></div>
+        <div className="flex flex-wrap gap-2">
+          <span className="rounded-md bg-[#e9f0ff] px-2 py-1 text-xs font-bold text-[#0e2a6b]">{item.unit}</span>
+          <StateBadge state={item.state} />
+          {technicalTemplate ? <span className="rounded-md border border-blue-200 bg-blue-50 px-2 py-1 text-xs font-bold text-blue-800">Blueprint técnico</span> : null}
+        </div>
         <h2 className="mt-4 text-2xl font-bold tracking-tight text-[var(--brand-text)]">{item.title}</h2>
         <p className="mt-3 text-sm leading-6 text-[var(--brand-secondary)]">{item.summary}</p>
 
-        <DetailSection title="Problema / propósito"><p>{item.purpose}</p></DetailSection>
-        <DetailSection title="Disparador"><p>{item.trigger}</p></DetailSection>
-        <DetailSection title="Entradas"><BulletList values={item.inputs} /></DetailSection>
+        {technicalTemplate ? (
+          <>
+            <DetailSection title="Qué existe hoy"><p>{technicalTemplate.blueprint.currentTruth}</p></DetailSection>
+            <DetailSection title="Resultado objetivo"><p>{technicalTemplate.blueprint.targetOutcome}</p></DetailSection>
+            <button type="button" onClick={onCreateMap} className="mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[var(--action)] px-5 text-sm font-bold text-white shadow-[0_12px_28px_rgba(33,101,255,0.2)] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 xl:hidden">
+              Crear mapa técnico editable <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </button>
+          </>
+        ) : (
+          <>
+            <DetailSection title="Problema / propósito"><p>{item.purpose}</p></DetailSection>
+            <DetailSection title="Disparador"><p>{item.trigger}</p></DetailSection>
+            <DetailSection title="Entradas"><BulletList values={item.inputs} /></DetailSection>
+          </>
+        )}
         {agent ? <DetailSection title="Capacidades disponibles"><BulletList values={agent.capabilities} /><p className="mt-2 text-xs text-[var(--brand-secondary)]">No implica que una conexión externa esté configurada.</p></DetailSection> : null}
         {agent ? <DetailSection title="Resultado esperado"><p>{agent.output}</p></DetailSection> : null}
-        {template ? <DetailSection title="Campos de la plantilla"><BulletList values={template.fields} /></DetailSection> : null}
-        <DetailSection title="Etapas">
+        {template?.templateType === 'operational' ? <DetailSection title="Campos de la plantilla"><BulletList values={template.fields} /></DetailSection> : null}
+        <DetailSection title={technicalTemplate ? 'Proceso' : 'Etapas'}>
           <ol className="space-y-3">
             {item.stages.map((stage, index) => (
               <li key={`${item.id}-${stage.title}`} className="grid grid-cols-[28px_1fr] gap-3">
@@ -318,16 +408,81 @@ function LibraryDetail({ item, closeButtonRef, onClose, onCreateMap }: LibraryDe
             ))}
           </ol>
         </DetailSection>
-        <DetailSection title="Evidencia"><BulletList values={item.evidence} /></DetailSection>
+        {technicalTemplate ? (
+          <>
+            <DetailSection title="Arquitectura por capas">
+              <ol className="space-y-4">
+                {technicalTemplate.blueprint.layers.map((layer, index) => (
+                  <li key={`${item.id}-layer-${layer.title}`} className="border-l-2 border-[#cfe0ff] pl-4">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <p className="font-bold text-[var(--brand-text)]"><span className="tabular-nums text-[var(--action)]">{index + 1}.</span> {layer.title}</p>
+                      <StateBadge state={layer.state} />
+                    </div>
+                    <p className="mt-1">{layer.purpose}</p>
+                    <p className="mt-2 text-xs text-[var(--brand-secondary)]">{layer.components.join(' · ')}</p>
+                  </li>
+                ))}
+              </ol>
+            </DetailSection>
+            <DetailSection title="Datos y entidades">
+              <div className="flex flex-wrap gap-2">
+                {technicalTemplate.blueprint.entities.map((entity) => <span key={entity} className="rounded-full border border-[var(--brand-border)] bg-[#f7faff] px-3 py-1 text-xs font-semibold text-[var(--brand-text)]">{entity}</span>)}
+              </div>
+            </DetailSection>
+            <DetailSection title="Integraciones">
+              <ul className="space-y-3">
+                {technicalTemplate.blueprint.integrations.map((integration) => (
+                  <li key={integration.name} className="grid gap-1 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start sm:gap-3">
+                    <div><p className="font-semibold text-[var(--brand-text)]">{integration.name}</p><p className="mt-1 text-xs">{integration.purpose}</p></div>
+                    <StateBadge state={integration.state} />
+                  </li>
+                ))}
+              </ul>
+            </DetailSection>
+            <DetailSection title="Despliegue · Prototipo / MVP / Escala">
+              <ol className="space-y-3">
+                {technicalTemplate.blueprint.deployment.map((phase) => (
+                  <li key={phase.horizon} className="grid gap-1 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start sm:gap-3">
+                    <div><p className="font-semibold text-[var(--brand-text)]">{phase.horizon}</p><p className="mt-1 text-xs">{phase.description}</p></div>
+                    <StateBadge state={phase.state} />
+                  </li>
+                ))}
+              </ol>
+            </DetailSection>
+            <DetailSection title="Fuentes técnicas consideradas">
+              <p className="mb-3 text-xs text-[var(--brand-secondary)]">Inventario sanitizado; no incluye archivos ni rutas privadas.</p>
+              <ul className="space-y-3">
+                {technicalTemplate.blueprint.technicalDocumentation.map((document) => (
+                  <li key={document.title}>
+                    <div className="flex flex-wrap items-center justify-between gap-2"><p className="font-semibold text-[var(--brand-text)]">{document.title}</p><StateBadge state={document.state} /></div>
+                    <p className="mt-1 text-xs">{document.contribution}</p>
+                  </li>
+                ))}
+              </ul>
+            </DetailSection>
+            <DetailSection title="Gates de validación">
+              <ul className="space-y-3">
+                {technicalTemplate.blueprint.validationGates.map((gate) => (
+                  <li key={gate.title} className="grid gap-1 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start sm:gap-3">
+                    <div><p className="font-semibold text-[var(--brand-text)]">{gate.title}</p><p className="mt-1 text-xs">{gate.evidence}</p></div>
+                    <StateBadge state={gate.state} />
+                  </li>
+                ))}
+              </ul>
+            </DetailSection>
+          </>
+        ) : null}
+        {!technicalTemplate ? <DetailSection title="Evidencia"><BulletList values={item.evidence} /></DetailSection> : null}
         <DetailSection title="Decisión humana"><p>{item.humanGate}</p></DetailSection>
         <DetailSection title="Fallback"><p>{item.fallback}</p></DetailSection>
         <DetailSection title="Siguiente acción"><p className="font-semibold text-[var(--brand-text)]">{item.nextAction}</p></DetailSection>
+        {technicalTemplate ? <DetailSection title="Fuera de alcance"><BulletList values={technicalTemplate.blueprint.exclusions} /></DetailSection> : null}
         <div className="mt-6 rounded-xl border border-blue-100 bg-[#f7faff] p-4 text-xs leading-5 text-[var(--brand-secondary)]">
           <p className="flex items-center gap-2 font-bold text-[var(--brand-text)]"><ShieldCheck className="h-4 w-4 text-[var(--action)]" aria-hidden="true" /> Trazabilidad sanitizada</p>
           <p className="mt-1">{item.source}. El mapa resultante es un borrador editable y requiere revisión.</p>
         </div>
         <button type="button" onClick={onCreateMap} className="mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[var(--action)] px-5 text-sm font-bold text-white shadow-[0_12px_28px_rgba(33,101,255,0.24)] transition-[background-color,transform] hover:bg-[#1b57df] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2">
-          Crear mapa editable <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          {technicalTemplate ? 'Crear mapa técnico editable' : 'Crear mapa editable'} <ArrowRight className="h-4 w-4" aria-hidden="true" />
         </button>
       </div>
     </aside>

@@ -6,7 +6,7 @@ AI Map convierte un brief, una minuta, un alcance o una carpeta local en un mapa
 
 ## Biblioteca AP
 
-La ruta `#/library` contiene un snapshot sanitizado del 8 de septiembre de 2026 con 12 casos prioritarios, 12 procesos derivados, 7 plantillas y 11 agentes. Permite buscar, filtrar, revisar trazabilidad y crear un mapa editable desde cualquier ficha. El catálogo es una síntesis segura para la interfaz: no incluye rutas locales, secretos ni contenido privado del vault, y no implica que los agentes o conexiones externas estén configurados.
+Las rutas `#/library` y `#/templates` contienen un snapshot sanitizado del 8 de septiembre de 2026 con 13 casos prioritarios, 13 procesos derivados, 10 plantillas y 11 agentes. Plantillas abre primero los blueprints técnicos de VisionPro, AECODE F3 y ESPARQ, con proceso, capas, datos, integraciones, despliegue, documentación y validaciones convertibles en un mapa editable. El catálogo es una síntesis segura para la interfaz: no incluye rutas locales, secretos ni contenido privado del vault, y no implica que los agentes o conexiones externas estén configurados.
 
 Inicio mantiene tres entradas rápidas: mapear un proyecto, auditar un proceso o usar una plantilla. Las plantillas técnicas heredadas permanecen disponibles como opción secundaria.
 

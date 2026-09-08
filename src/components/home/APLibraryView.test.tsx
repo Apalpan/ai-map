@@ -41,4 +41,34 @@ describe('APLibraryView', () => {
     expect(screen.getByRole('tab', { name: /Procesos/ }).getAttribute('aria-selected')).toBe('true');
     expect(screen.getByRole('tabpanel').getAttribute('aria-labelledby')).toBe('ap-library-tab-processes');
   });
+
+  it('opens the source-grounded VisionPro blueprint and creates a technical map', () => {
+    const onCreateLocalMap = vi.fn();
+    render(<APLibraryView onCreateLocalMap={onCreateLocalMap} initialTab="templates" />);
+
+    expect(screen.getByRole('heading', { name: 'Proceso y arquitectura, en una plantilla que sí se entiende.' })).toBeTruthy();
+    expect(screen.getAllByText('Blueprint técnico · VisionPro').length).toBeGreaterThan(0);
+    expect(screen.getByText('Arquitectura por capas')).toBeTruthy();
+    expect(screen.getByText('Fuentes técnicas consideradas')).toBeTruthy();
+    expect(screen.getByText('Inventario sanitizado; no incluye archivos ni rutas privadas.')).toBeTruthy();
+    expect(screen.getAllByText('Requiere validación').length).toBeGreaterThan(0);
+    expect(screen.getAllByRole('button', { name: 'Crear mapa técnico editable' })).toHaveLength(2);
+
+    fireEvent.click(screen.getAllByRole('button', { name: 'Crear mapa técnico editable' })[0]);
+    expect(onCreateLocalMap).toHaveBeenCalledTimes(1);
+    expect(onCreateLocalMap.mock.calls[0][0]).toContain('architecture_validation');
+  });
+
+  it('separates technical and operational templates while keeping filtered operations visible', () => {
+    render(<APLibraryView onCreateLocalMap={vi.fn()} initialTab="templates" />);
+
+    expect(screen.getByRole('heading', { name: '3 blueprints técnicos' })).toBeTruthy();
+    expect(screen.getByRole('heading', { name: '7 plantillas operativas' })).toBeTruthy();
+    const search = screen.getByLabelText('Buscar blueprint o capa');
+    expect(search.getAttribute('placeholder')).toBe('Buscar blueprint o capa');
+
+    fireEvent.change(search, { target: { value: 'Playbook operativo' } });
+    expect(screen.getAllByText('Playbook operativo').length).toBeGreaterThan(0);
+    expect(screen.getByText('No hay blueprints técnicos que coincidan con estos filtros.')).toBeTruthy();
+  });
 });
