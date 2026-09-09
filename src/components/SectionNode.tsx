@@ -12,7 +12,7 @@ import { NodeChrome } from './NodeChrome';
 import { useSelectionState } from '@/store/selectionHooks';
 import { readMermaidImportedNodeMetadataFromData } from '@/services/mermaid/importProvenance';
 
-type SectionRenderVariant = 'default' | 'mermaid-import';
+type SectionRenderVariant = 'default' | 'mermaid-import' | 'ai-process-lane';
 
 interface SectionRenderConfig {
   variant: SectionRenderVariant;
@@ -30,6 +30,7 @@ interface SectionRenderConfig {
 
 function getSectionRenderConfig(
   isImportedMermaidContainer: boolean,
+  isAIProcessLane: boolean,
   borderColor: string
 ): SectionRenderConfig {
   if (isImportedMermaidContainer) {
@@ -45,6 +46,22 @@ function getSectionRenderConfig(
       showLeadingIcon: false,
       showImportedBadge: true,
       showChildCount: false,
+    };
+  }
+
+  if (isAIProcessLane) {
+    return {
+      variant: 'ai-process-lane',
+      bodyBorderRadius: '18px',
+      bodyInset: 0,
+      titleTop: 12,
+      titleLeft: 16,
+      titlePadding: '0.4rem 0.75rem',
+      titleBackgroundColor: 'rgba(255,255,255,0.88)',
+      titleMaxWidth: '520px',
+      showLeadingIcon: false,
+      showImportedBadge: false,
+      showChildCount: true,
     };
   }
 
@@ -83,6 +100,7 @@ function SectionNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
   const isHidden = data.sectionHidden === true;
   const isImportedMermaidContainer =
     readMermaidImportedNodeMetadataFromData(data)?.role === 'container';
+  const isAIProcessLane = data.aiProcessLane === true;
   const minWidth = isImportedMermaidContainer ? explicitWidth ?? 350 : 350;
   const minHeight = isImportedMermaidContainer ? explicitHeight ?? 250 : 250;
 
@@ -90,7 +108,11 @@ function SectionNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
   const bgColor = isDropTarget
     ? `color-mix(in srgb, ${theme.bg} 85%, white 15%)`
     : theme.bg;
-  const renderConfig = getSectionRenderConfig(isImportedMermaidContainer, borderColor);
+  const renderConfig = getSectionRenderConfig(
+    isImportedMermaidContainer,
+    isAIProcessLane,
+    borderColor
+  );
 
   return (
     <NodeChrome
@@ -107,13 +129,14 @@ function SectionNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
         data-section-render-variant={renderConfig.variant}
       >
         <div
-          className="pointer-events-auto absolute left-0 flex items-center gap-2 px-2.5 py-1.5 rounded-lg"
+          className={`pointer-events-auto absolute flex items-center gap-2 rounded-lg ${isAIProcessLane ? 'justify-center font-sans' : ''}`}
           style={{
             top: renderConfig.titleTop,
             left: renderConfig.titleLeft,
             padding: renderConfig.titlePadding,
             backgroundColor: renderConfig.titleBackgroundColor,
             maxWidth: renderConfig.titleMaxWidth,
+            ...(isAIProcessLane ? { width: renderConfig.titleMaxWidth } : {}),
             zIndex: 1,
           }}
         >
@@ -140,7 +163,7 @@ function SectionNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
             onDraftChange={labelEdit.setDraft}
             onCommit={labelEdit.commit}
             onKeyDown={labelEdit.handleKeyDown}
-            className={`font-semibold leading-tight tracking-tight whitespace-nowrap ${
+            className={`font-semibold leading-tight tracking-tight ${isAIProcessLane ? 'whitespace-normal text-center font-sans' : 'whitespace-nowrap'} ${
               isImportedMermaidContainer ? 'text-[12px]' : 'text-[13px]'
             }`}
             style={{ color: theme.title }}
@@ -156,7 +179,7 @@ function SectionNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
               onDraftChange={subLabelEdit.setDraft}
               onCommit={subLabelEdit.commit}
               onKeyDown={subLabelEdit.handleKeyDown}
-              className="text-[11px] font-medium px-1.5 py-0.5 rounded-full flow-lod-secondary"
+              className={`text-[11px] font-medium px-1.5 py-0.5 rounded-full flow-lod-secondary ${isAIProcessLane ? 'text-center font-sans' : ''}`}
               style={{
                 backgroundColor: theme.badgeBg,
                 color: theme.badgeText,

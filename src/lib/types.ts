@@ -202,6 +202,10 @@ export interface SectionNodeData {
   sectionCollapsed?: boolean;
   sectionMermaidId?: string;
   sectionMermaidTitle?: string;
+  /** Marks a section as one horizontal lane in an AP AI Process. */
+  aiProcessLane?: boolean;
+  /** Stable semantic key used by the native AI Process builder. */
+  aiProcessLaneKey?: string;
 }
 
 export interface MermaidSvgNodeData {

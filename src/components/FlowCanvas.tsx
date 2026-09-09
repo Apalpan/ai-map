@@ -32,6 +32,7 @@ import {
   readImportLayoutMetadata,
 } from '@/services/importLayoutMetadata';
 import { composeDiagramForDisplay } from '@/services/composeDiagramForDisplay';
+import { getAIProcessInitialViewport } from './flow-canvas/aiProcessViewport';
 
 interface FlowCanvasProps {
   recordHistory: () => void;
@@ -84,8 +85,9 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
   const lastInteractionScreenPositionRef = useRef<{ x: number; y: number } | null>(null);
   const connectMenuSetterRef = useRef<((value: ConnectMenuState | null) => void) | null>(null);
   const importStabilizationSignatureRef = useRef<string | null>(null);
+  const initialAIProcessViewportKeyRef = useRef<string | null>(null);
 
-  const { screenToFlowPosition, fitView } = useReactFlow();
+  const { screenToFlowPosition, fitView, setViewport } = useReactFlow();
   const clearPaneSelection = useCallback((): void => {
     setSelectedNodeId(null);
     setSelectedEdgeId(null);
@@ -288,6 +290,32 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
       })
       .join('|');
   }, [nodes]);
+  const initialAIProcessViewport = useMemo(
+    () => getAIProcessInitialViewport(nodes),
+    [nodes]
+  );
+  const aiProcessViewportKey = useMemo(() => {
+    const laneIds = nodes
+      .filter((node) => node.type === 'section' && node.data.aiProcessLane === true)
+      .map((node) => node.id);
+    return laneIds.length > 0 ? laneIds.join('|') : null;
+  }, [nodes]);
+
+  useEffect(() => {
+    if (!initialAIProcessViewport || !aiProcessViewportKey) {
+      initialAIProcessViewportKeyRef.current = null;
+      return;
+    }
+    if (initialAIProcessViewportKeyRef.current === aiProcessViewportKey) {
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      initialAIProcessViewportKeyRef.current = aiProcessViewportKey;
+      void setViewport(initialAIProcessViewport, { duration: 280 });
+    }, 100);
+    return () => window.clearTimeout(timer);
+  }, [aiProcessViewportKey, initialAIProcessViewport, setViewport]);
 
   useEffect(() => {
     if (!importStabilizationKey) {
@@ -436,7 +464,7 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
       onConnectEnd={onConnectEndWrapper}
       onDragOver={onDragOver}
       onDrop={onDrop}
-      fitView={true}
+      fitView={!initialAIProcessViewport}
       reactFlowConfig={reactFlowConfig}
       snapToGrid={snapToGrid}
       effectiveShowGrid={effectiveShowGrid}

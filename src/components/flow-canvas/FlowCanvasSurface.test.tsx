@@ -51,6 +51,12 @@ describe('FlowCanvasSurface', () => {
             selected: true,
             data: { label: 'Two' },
           },
+          {
+            id: 'lane-1',
+            type: 'section',
+            position: { x: 0, y: 100 },
+            data: { label: 'Lane', aiProcessLane: true },
+          },
         ] as never}
         edges={[
           {
@@ -124,5 +130,9 @@ describe('FlowCanvasSurface', () => {
 
     expect(screen.getByText('3 selected')).toBeInTheDocument();
     expect(screen.getByText('(2 nodes, 1 edge)')).toBeInTheDocument();
+    const processHint = screen.getByText(/AI Process · arrastra para recorrer/);
+    expect(processHint).toBeInTheDocument();
+    expect(processHint.className).toContain('right-5');
+    expect(processHint.className).not.toContain('left-5');
   });
 });

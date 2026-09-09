@@ -17,6 +17,7 @@ import {
   createFlowEditorOpenFlowDslRouteState,
   type FlowEditorRouteState,
 } from '@/app/routeState';
+import type { AIProcessGraph } from '@/services/apLibrary/buildAIProcessGraph';
 import { DocsSiteRedirect } from '@/components/app/DocsSiteRedirect';
 import { RouteLoadingFallback } from '@/components/app/RouteLoadingFallback';
 import { MobileWorkspaceGate } from '@/components/app/MobileWorkspaceGate';
@@ -109,7 +110,7 @@ function FlowCanvasRoute(): React.JSX.Element {
 function HomePageRoute(): React.JSX.Element {
   const navigate = useNavigate();
   const location = useLocation();
-  const { createDocument } = useWorkspaceDocumentActions();
+  const { createDocument, renameDocument } = useWorkspaceDocumentActions();
 
   const activeTab = getHomePageTab(location.pathname);
 
@@ -142,6 +143,19 @@ function HomePageRoute(): React.JSX.Element {
     openNewFlow(createFlowEditorOpenFlowDslRouteState(dsl));
   }
 
+  function handleCreateAIProcess(graph: AIProcessGraph): void {
+    const newDocumentId = createDocument();
+    renameDocument(newDocumentId, graph.title);
+    // Hydrate the active page before routing. A history-state-only handoff can leave
+    // the new persisted document empty if the editor route mounts without consuming
+    // that transient payload.
+    const state = useFlowStore.getState();
+    state.setNodes(graph.nodes);
+    state.setEdges(graph.edges);
+    state.updateTab(state.activeTabId, { name: graph.title });
+    navigate(`/flow/${newDocumentId}`);
+  }
+
   function handleLaunchWithInitialTemplate(templateId: string): void {
     openNewFlow(createFlowEditorInitialTemplateRouteState(templateId));
   }
@@ -159,6 +173,7 @@ function HomePageRoute(): React.JSX.Element {
         onLaunchWithAI={handleLaunchWithAI}
         onGenerateAIMap={handleGenerateAIMap}
         onCreateLocalMap={handleCreateLocalMap}
+        onCreateAIProcess={handleCreateAIProcess}
         onImportJSON={handleImportJSON}
         onOpenFlow={(flowId) => navigate(`/flow/${flowId}`)}
         activeTab={activeTab}

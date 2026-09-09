@@ -8,6 +8,7 @@ import { HomeSettingsView } from './home/HomeSettingsView';
 import { HomeSidebar } from './home/HomeSidebar';
 import { APLibraryView } from './home/APLibraryView';
 import { PanelLeftOpen } from 'lucide-react';
+import type { AIProcessGraph } from '@/services/apLibrary/buildAIProcessGraph';
 
 type HomePageTab = 'home' | 'library' | 'templates' | 'settings' | 'mcp';
 type HomeSettingsTab = 'general' | 'canvas' | 'shortcuts' | 'ai' | 'mcp';
@@ -19,6 +20,7 @@ interface HomePageProps {
   onLaunchWithAI: () => void;
   onGenerateAIMap: (prompt: string) => void;
   onCreateLocalMap: (dsl: string) => void;
+  onCreateAIProcess: (graph: AIProcessGraph) => void;
   onImportJSON: () => void;
   onOpenFlow: (flowId: string) => void;
   activeTab?: HomePageTab;
@@ -31,6 +33,7 @@ export const HomePage: React.FC<HomePageProps> = ({
   onLaunchWithAI,
   onGenerateAIMap,
   onCreateLocalMap,
+  onCreateAIProcess,
   onImportJSON,
   onOpenFlow,
   activeTab: propActiveTab,
@@ -143,9 +146,9 @@ export const HomePage: React.FC<HomePageProps> = ({
           />
         )}
 
-        {activeTab === 'library' && <APLibraryView onCreateLocalMap={onCreateLocalMap} />}
+        {activeTab === 'library' && <APLibraryView onCreateLocalMap={onCreateLocalMap} onCreateAIProcess={onCreateAIProcess} />}
 
-        {activeTab === 'templates' && <APLibraryView onCreateLocalMap={onCreateLocalMap} initialTab="templates" />}
+        {activeTab === 'templates' && <APLibraryView onCreateLocalMap={onCreateLocalMap} onCreateAIProcess={onCreateAIProcess} initialTab="templates" />}
 
         {activeTab === 'mcp' && <HomeMCPView onOpenLibrary={() => handleTabChange('library')} />}
 

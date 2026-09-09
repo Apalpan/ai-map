@@ -41,7 +41,8 @@ La identidad visible del workspace usa el retrato estable `public/brand/alejandr
 ## Biblioteca y workspace
 
 - Biblioteca AP usa master-detail responsive, tabs, búsqueda y filtros reales.
-- La ruta Plantillas prioriza tres blueprints técnicos AP. Sus fichas muestran realidad actual, proceso, arquitectura por capas, datos, integraciones, horizontes de despliegue, documentación y gates con estado textual.
+- La ruta Plantillas prioriza tres blueprints técnicos AP. Su CTA `Crear AI Process editable` abre un sistema de producción con exactamente cuatro lanes horizontales, recorrido global izquierda → derecha y tarjetas centradas en Plus Jakarta Sans. Las posiciones son nativas y deterministas: la apertura inicial no ejecuta ELK ni destruye la composición.
+- Las fichas y el AI Process muestran realidad actual, proceso, arquitectura por capas, datos, integraciones, horizontes de despliegue, documentación, gates y límites con estado textual.
 - Todo panel persistente tiene Cerrar/Ocultar y un control accesible para reabrir que libera el espacio del layout.
 - En móvil, el detalle seleccionado se presenta antes de la lista y el foco se mueve al control Cerrar.
 - Canvas, catálogo y superficies de detalle usan `linear-gradient(135deg,#f7faff 0%,#eaf4ff 48%,#f5fbff 100%)` con controles blancos de alto contraste.

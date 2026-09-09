@@ -159,6 +159,11 @@ export function FlowCanvasSurface({
           </div>
         </div>
       ) : null}
+      {nodes.some((node) => node.type === 'section' && node.data.aiProcessLane === true) ? (
+        <div className="pointer-events-none absolute right-5 top-5 z-30 max-w-[calc(100%-2.5rem)] rounded-xl border border-blue-200 bg-white/90 px-3 py-2 text-right font-sans text-[11px] font-semibold leading-4 text-[#0e2a6b] shadow-sm backdrop-blur">
+          AI Process · arrastra para recorrer · doble clic para editar · usa los controles para zoom
+        </div>
+      ) : null}
       <div className="sr-only" aria-live="polite" aria-atomic="true">
         {selectionAnnouncement}
       </div>

@@ -42,4 +42,5 @@ describe('routeState', () => {
     expect(getInitialFlowEditorAIPrompt({ initialAIPrompt: '   ' })).toBeNull();
     expect(getInitialFlowEditorAIPrompt(null)).toBeNull();
   });
+
 });

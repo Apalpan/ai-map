@@ -55,6 +55,7 @@ describe('HomePage integration flows', () => {
             onLaunchWithAI={vi.fn()}
             onGenerateAIMap={vi.fn()}
             onCreateLocalMap={vi.fn()}
+            onCreateAIProcess={vi.fn()}
             onImportJSON={vi.fn()}
             onOpenFlow={vi.fn()}
             {...props}
@@ -124,13 +125,16 @@ describe('HomePage integration flows', () => {
 
   it('creates the selected AP technical blueprint from the templates route', async () => {
     const onCreateLocalMap = vi.fn();
-    await renderHomePage({ onCreateLocalMap });
+    const onCreateAIProcess = vi.fn();
+    await renderHomePage({ onCreateLocalMap, onCreateAIProcess });
 
     fireEvent.click(screen.getByTestId('sidebar-templates'));
-    fireEvent.click(screen.getAllByRole('button', { name: 'Crear mapa técnico editable' })[0]);
+    fireEvent.click(screen.getAllByRole('button', { name: 'Crear AI Process editable' })[0]);
 
-    expect(onCreateLocalMap).toHaveBeenCalledTimes(1);
-    expect(onCreateLocalMap.mock.calls[0][0]).toContain('architecture_deployment');
+    expect(onCreateLocalMap).not.toHaveBeenCalled();
+    expect(onCreateAIProcess).toHaveBeenCalledTimes(1);
+    expect(onCreateAIProcess.mock.calls[0][0].title).toBe('AI Process · VisionPro');
+    expect(onCreateAIProcess.mock.calls[0][0].nodes.filter((node: { type?: string }) => node.type === 'section')).toHaveLength(4);
   });
 
   it('exposes templates and the progressive AI Mapper path in the empty dashboard state', async () => {

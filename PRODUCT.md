@@ -24,6 +24,7 @@ En menos de cinco minutos, transforma una descripción, acta, alcance o brief en
 - 11 fichas de agentes con problema, disparador, inputs, capacidades, resultado, control humano, fallback y evidencia.
 - Estados permitidos: `Confirmado`, `Documentado`, `WIP` y `Requiere validación`.
 - AgentFlow e ICEBOT permanecen WIP. VisionPro se describe únicamente como prototipo operativo en piloto.
+- Los tres blueprints técnicos crean un `AI Process` nativo, no una rama DSL genérica: cuatro lanes horizontales apiladas, etapas únicas en orden izquierda → derecha y habilitadores técnicos visibles dentro del sistema de producción. Los nodos y lanes conservan drag, resize, edición, conexiones, historial, pan/zoom y exportación.
 - Los blueprints separan realidad actual, arquitectura objetivo, entidades, integraciones, despliegue, documentación, gates y exclusiones. Toda integración o escala no probada conserva el estado `Requiere validación`.
 - El snapshot se publica como datos TypeScript separados del store del canvas y no contiene rutas locales, secretos ni transcripciones privadas.
 

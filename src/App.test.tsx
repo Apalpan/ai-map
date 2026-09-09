@@ -13,10 +13,17 @@ vi.mock('./components/HomePage', () => ({
     onLaunch,
     onLaunchWithTemplates,
     onImportJSON,
+    onCreateAIProcess,
   }: {
     onLaunch: () => void;
     onLaunchWithTemplates: () => void;
     onImportJSON: () => void;
+    onCreateAIProcess: (graph: {
+      id: string;
+      title: string;
+      nodes: Array<Record<string, unknown>>;
+      edges: Array<Record<string, unknown>>;
+    }) => void;
   }) => (
     <div data-testid="home-page">
       <button type="button" onClick={onLaunch}>
@@ -27,6 +34,31 @@ vi.mock('./components/HomePage', () => ({
       </button>
       <button type="button" onClick={onImportJSON}>
         Import Flow
+      </button>
+      <button
+        type="button"
+        onClick={() => onCreateAIProcess({
+          id: 'ai-process:test',
+          title: 'AI Process · Test',
+          nodes: [
+            ...Array.from({ length: 4 }, (_, index) => ({
+              id: `lane-${index + 1}`,
+              type: 'section',
+              position: { x: 0, y: 70 + index * 600 },
+              data: { label: `Lane ${index + 1}`, aiProcessLane: true },
+            })),
+            {
+              id: 'stage-1',
+              type: 'process',
+              parentId: 'lane-1',
+              position: { x: 110, y: 92 },
+              data: { label: 'Stage 1' },
+            },
+          ],
+          edges: [{ id: 'edge-1', source: 'stage-1', target: 'stage-1' }],
+        })}
+      >
+        Create AI Process
       </button>
     </div>
   ),
@@ -106,6 +138,24 @@ describe('App routing', () => {
       expect(window.location.hash).toBe('#/templates');
       expect(useFlowStore.getState().documents).toHaveLength(0);
       expect(useFlowStore.getState().activeDocumentId).toBe('');
+    });
+  });
+
+  it('creates and names a document before opening a native AI Process', async () => {
+    window.history.pushState({}, '', '/#/home');
+
+    render(<App />);
+    fireEvent.click(await screen.findByRole('button', { name: 'Create AI Process' }));
+
+    expect(await screen.findByTestId('flow-editor')).toBeTruthy();
+    await waitFor(() => {
+      const [document] = useFlowStore.getState().documents;
+      expect(document?.name).toBe('AI Process · Test');
+      expect(document?.pages[0]?.name).toBe('AI Process · Test');
+      expect(useFlowStore.getState().nodes).toHaveLength(5);
+      expect(useFlowStore.getState().nodes.filter((node) => node.type === 'section')).toHaveLength(4);
+      expect(useFlowStore.getState().edges).toHaveLength(1);
+      expect(window.location.hash).toMatch(/^#\/flow\//);
     });
   });
 });

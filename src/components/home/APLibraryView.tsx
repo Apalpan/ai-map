@@ -22,12 +22,18 @@ import {
   type APLibraryState,
   type APLibraryTab,
   type APTemplate,
+  type APTechnicalBlueprintTemplate,
   type APUnit,
 } from '@/data/apLibrary';
 import { buildLibraryMapDsl } from '@/services/apLibrary/buildLibraryMapDsl';
+import {
+  buildAIProcessGraph,
+  type AIProcessGraph,
+} from '@/services/apLibrary/buildAIProcessGraph';
 
 interface APLibraryViewProps {
   onCreateLocalMap: (dsl: string) => void;
+  onCreateAIProcess: (graph: AIProcessGraph) => void;
   initialTab?: APLibraryTab;
 }
 
@@ -48,6 +54,7 @@ function shouldOpenDetailByDefault(): boolean {
 
 export function APLibraryView({
   onCreateLocalMap,
+  onCreateAIProcess,
   initialTab = 'cases',
 }: APLibraryViewProps): React.ReactElement {
   const [activeTab, setActiveTab] = useState<APLibraryTab>(initialTab);
@@ -279,7 +286,13 @@ export function APLibraryView({
             item={selectedItem}
             closeButtonRef={closeButtonRef}
             onClose={closeDetail}
-            onCreateMap={() => onCreateLocalMap(buildLibraryMapDsl(selectedItem))}
+            onCreateMap={() => {
+              if (selectedItem.kind === 'template' && selectedItem.templateType === 'technical-blueprint') {
+                onCreateAIProcess(buildAIProcessGraph(selectedItem as APTechnicalBlueprintTemplate));
+                return;
+              }
+              onCreateLocalMap(buildLibraryMapDsl(selectedItem));
+            }}
           />
         ) : null}
       </div>
@@ -385,7 +398,7 @@ function LibraryDetail({ item, closeButtonRef, onClose, onCreateMap }: LibraryDe
             <DetailSection title="Qué existe hoy"><p>{technicalTemplate.blueprint.currentTruth}</p></DetailSection>
             <DetailSection title="Resultado objetivo"><p>{technicalTemplate.blueprint.targetOutcome}</p></DetailSection>
             <button type="button" onClick={onCreateMap} className="mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[var(--action)] px-5 text-sm font-bold text-white shadow-[0_12px_28px_rgba(33,101,255,0.2)] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 xl:hidden">
-              Crear mapa técnico editable <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              Crear AI Process editable <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </button>
           </>
         ) : (
@@ -482,7 +495,7 @@ function LibraryDetail({ item, closeButtonRef, onClose, onCreateMap }: LibraryDe
           <p className="mt-1">{item.source}. El mapa resultante es un borrador editable y requiere revisión.</p>
         </div>
         <button type="button" onClick={onCreateMap} className="mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[var(--action)] px-5 text-sm font-bold text-white shadow-[0_12px_28px_rgba(33,101,255,0.24)] transition-[background-color,transform] hover:bg-[#1b57df] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2">
-          {technicalTemplate ? 'Crear mapa técnico editable' : 'Crear mapa editable'} <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          {technicalTemplate ? 'Crear AI Process editable' : 'Crear mapa editable'} <ArrowRight className="h-4 w-4" aria-hidden="true" />
         </button>
       </div>
     </aside>
